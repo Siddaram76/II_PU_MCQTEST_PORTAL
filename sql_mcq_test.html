@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL - MCQ Test | Class XII Computer Science</title>
+    <style>
+        * {margin: 0; padding: 0; box-sizing: border-box;}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; padding: 20px;
+        }
+        .container {
+            max-width: 900px; margin: 0 auto; background: white;
+            border-radius: 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; padding: 30px; text-align: center;
+        }
+        .header h1 {font-size: 28px; margin-bottom: 10px;}
+        .header p {font-size: 16px; opacity: 0.9;}
+        .timer-section {
+            background: #f8f9fa; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .timer {font-size: 24px; font-weight: bold; color: #667eea;}
+        .timer.warning {color: #e74c3c; animation: pulse 1s infinite;}
+        @keyframes pulse {0%, 100% {opacity: 1;} 50% {opacity: 0.5;}}
+        .progress-bar {
+            flex: 1; margin: 0 30px; height: 8px;
+            background: #e9ecef; border-radius: 10px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%; transition: width 0.3s ease;
+        }
+        .question-container {padding: 30px; display: none;}
+        .question-container.active {display: block;}
+        .question-header {
+            display: flex; justify-content: space-between;
+            margin-bottom: 20px; padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .question-number {font-size: 14px; color: #6c757d; font-weight: 600;}
+        .question-text {
+            font-size: 18px; color: #2c3e50;
+            margin-bottom: 25px; line-height: 1.6;
+        }
+        .options {list-style: none;}
+        .option {
+            background: #f8f9fa; margin-bottom: 12px;
+            padding: 15px 20px; border-radius: 10px;
+            cursor: pointer; transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .option:hover {background: #e9ecef; transform: translateX(5px);}
+        .option.selected {background: #667eea; color: white; border-color: #667eea;}
+        .option.correct {background: #28a745; color: white; border-color: #28a745;}
+        .option.wrong {background: #dc3545; color: white; border-color: #dc3545;}
+        .navigation {
+            display: flex; justify-content: space-between;
+            padding: 20px 30px; background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+        .btn {
+            padding: 12px 30px; border: none; border-radius: 8px;
+            font-size: 16px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);}
+        .btn-secondary {background: #6c757d; color: white;}
+        .btn-secondary:hover {background: #5a6268;}
+        .btn:disabled {opacity: 0.5; cursor: not-allowed;}
+        .result-container {display: none; padding: 40px; text-align: center;}
+        .result-container.active {display: block;}
+        .score-circle {
+            width: 200px; height: 200px; border-radius: 50%;
+            margin: 0 auto 30px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            font-size: 48px; font-weight: bold; color: white;
+        }
+        .score-circle.excellent {background: linear-gradient(135deg, #28a745 0%, #20c997 100%);}
+        .score-circle.good {background: linear-gradient(135deg, #17a2b8 0%, #3498db 100%);}
+        .score-circle.average {background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);}
+        .score-circle.poor {background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);}
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px; margin: 30px 0;
+        }
+        .stat-card {
+            background: #f8f9fa; padding: 20px;
+            border-radius: 10px; border-left: 4px solid #667eea;
+        }
+        .stat-label {font-size: 14px; color: #6c757d; margin-bottom: 5px;}
+        .stat-value {font-size: 24px; font-weight: bold; color: #2c3e50;}
+        .review-section {margin-top: 30px; text-align: left;}
+        .review-question {
+            background: #f8f9fa; padding: 20px;
+            border-radius: 10px; margin-bottom: 15px;
+        }
+        .review-question.correct {border-left: 4px solid #28a745;}
+        .review-question.wrong {border-left: 4px solid #dc3545;}
+        @media (max-width: 768px) {
+            .container {margin: 10px;}
+            .header h1 {font-size: 22px;}
+            .timer-section {flex-direction: column; gap: 15px;}
+            .progress-bar {margin: 0; width: 100%;}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💾 Structured Query Language (SQL)</h1>
+            <p>Class XII Computer Science - MCQ Test</p>
+        </div>
+        <div class="timer-section">
+            <div class="timer" id="timer">⏱️ 60:00</div>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+            <div class="question-number">
+                <span id="currentQuestion">1</span> / <span id="totalQuestions">81</span>
+            </div>
+        </div>
+        <div id="questionsContainer"></div>
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()">← Previous</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitTest()" style="display: none;">Submit Test</button>
+        </div>
+        <div class="result-container" id="resultContainer">
+            <h2>Test Completed! 🎉</h2>
+            <div class="score-circle" id="scoreCircle">
+                <div><div id="scorePercentage">0%</div>
+                <div style="font-size: 16px; margin-top: 10px;">Score</div></div>
+            </div>
+            <div class="result-stats">
+                <div class="stat-card"><div class="stat-label">Total Questions</div><div class="stat-value" id="totalQuestionsResult">81</div></div>
+                <div class="stat-card"><div class="stat-label">Correct Answers</div><div class="stat-value" id="correctAnswers">0</div></div>
+                <div class="stat-card"><div class="stat-label">Wrong Answers</div><div class="stat-value" id="wrongAnswers">0</div></div>
+                <div class="stat-card"><div class="stat-label">Time Taken</div><div class="stat-value" id="timeTaken">0:00</div></div>
+            </div>
+            <button class="btn btn-primary" onclick="showReview()">View Detailed Review</button>
+            <button class="btn btn-secondary" onclick="restartTest()" style="margin-left: 10px;">Retake Test</button>
+        </div>
+        <div class="review-section" id="reviewSection" style="display: none;"></div>
+    </div>
+    <script>
+const questions=[
+{q:"Which MySQL data type is fixed length and pads unused space with blanks?",options:["CHAR(n)","VARCHAR(n)","TEXT","STRING"],answer:0},
+{q:"What is the maximum length allowed for a VARCHAR data type in MySQL?",options:["32,767","65,535","1,024","255"],answer:1},
+{q:"Which data type should be used in MySQL to store values larger than 4,294,967,295?",options:["BIGINT","FLOAT","INT","DOUBLE"],answer:0},
+{q:"Which MySQL data type is suitable for storing dates in the format 'YYYY-MM-DD'?",options:["DATETIME","TIME","TIMESTAMP","DATE"],answer:3},
+{q:"How many bytes does a FLOAT data type occupy in MySQL?",options:["2 bytes","4 bytes","8 bytes","16 bytes"],answer:1},
+{q:"Why might a developer prefer VARCHAR over CHAR for storing names?",options:["VARCHAR is faster for indexing","CHAR wastes space for variable-length strings","CHAR supports Unicode while VARCHAR does not","VARCHAR automatically converts to uppercase"],answer:1},
+{q:"A school database stores student roll numbers. Which data type is most appropriate and why?",options:["VARCHAR","CHAR","INT","DATE"],answer:2},
+{q:"A developer uses CHAR(10) to store student names. What is the possible drawback of this choice?",options:["CHAR does not support special characters","CHAR automatically converts text to uppercase","CHAR always stores exactly 10 characters, wasting space","CHAR cannot store numeric values"],answer:2},
+{q:"Why might VARCHAR be preferred over CHAR for storing student addresses?",options:["CHAR cannot store space","VARCHAR is faster for searching","VARCHAR stores only the actual length of the string","CHAR is limited to 10 characters"],answer:2},
+{q:"A student's age is stored using the INT data type. What kind of operations can be performed on this data?",options:["Arithmetic operations","Text alignment","Date formatting","Concatenation"],answer:0},
+{q:"Which of the following is a relational database management system?",options:["MongoDB","MySQL","NoSQL","Graph Database"],answer:1},
+{q:"Which SQL statement is used to retrieve data from a database?",options:["INSERT","UPDATE","SELECT","DELETE"],answer:2},
+{q:"Which of the following is true about SQL?",options:["SQL is case-sensitive","SQL is used only for data retrieval","SQL uses procedural logic","SQL uses English-like syntax"],answer:3},
+{q:"Which prompt indicates that MySQL is ready to accept SQL statements?",options:["SQL>","mysql>","cmd>","db>"],answer:1},
+{q:"Which of the following is a fixed-length character data type in MySQL?",options:["VARCHAR","CHAR","TEXT","STRING"],answer:1},
+{q:"Which constraint ensures that a column cannot have missing or unknown values?",options:["UNIQUE","DEFAULT","NOT NULL","FOREIGN KEY"],answer:2},
+{q:"Which two constraints restricts range for column values?",options:["UNIQUE","DEFAULT","PRIMARY KEY","CHECK"],answer:3},
+{q:"Which SQL command displays the structure of a table?",options:["SHOW TABLE","DESCRIBE","STRUCTURE","VIEW TABLE"],answer:1},
+{q:"Which statement is used to add a new column to an existing table?",options:["MODIFY COLUMN","ADD ATTRIBUTE","ALTER TABLE ADD","INSERT COLUMN"],answer:2},
+{q:"Which constraint ensures that no two rows have the same value in a column?",options:["NOT NULL","PRIMARY KEY","UNIQUE","DEFAULT"],answer:2},
+{q:"Which of the following is true about foreign keys?",options:["They must reference a primary key in another table","They can reference any column","They allow duplicate values","They can store NULL values"],answer:0},
+{q:"Which SQL statement is used to insert new records into a table?",options:["ADD","INSERT","UPDATE","SELECT"],answer:1},
+{q:"Which of the following is part of Data Manipulation Language (DML)?",options:["CREATE","ALTER","DELETE","DROP"],answer:2},
+{q:"What should be ensured before inserting a record with a foreign key?",options:["The table must be empty","The referenced table must be populated","The foreign key must be NULL","The primary key should be removed"],answer:1},
+{q:"Which format is used to store date values in MySQL?",options:["DD-MM-YYYY","MM-DD-YYYY","YYYY-MM-DD","YYYY/DD/MM"],answer:2},
+{q:"Which one of the SQL clause used to filter records based on a condition?",options:["FROM","SELECT","WHERE","FILTER"],answer:2},
+{q:"The keyword to rename a column in the output of a select query?",options:["RENAME","CHANGE","AS","ALIAS"],answer:2},
+{q:"Which clause ensures that duplicate values are not shown in the query result?",options:["UNIQUE","DISTINCT","FILTER","GROUP BY"],answer:1},
+{q:"Which operator is used to define a range in SQL queries?",options:["BETWEEN","RANGE","LIMIT","IN"],answer:0},
+{q:"What does the ORDER BY clause do in SQL?",options:["Sorts rows based on column values","Filters rows based on conditions","Groups rows with similar values","Deletes rows from a table"],answer:0},
+{q:"Which operator is used to check for missing or unknown values in SQL?",options:["is empty","not null","is null","In"],answer:2},
+{q:"The SQL operator is used for substring pattern matching is",options:["IN","BETWEEN","LIKE","MATCH"],answer:2},
+{q:"What does the % wildcard represent in SQL?",options:["Exactly one character","Any digit","Zero, one, or multiple characters","Only uppercase letters"],answer:2},
+{q:"Which query selects employees whose names start with 'K'?",options:["SELECT * FROM EMPLOYEE WHERE Ename = 'K';","SELECT * FROM EMPLOYEE WHERE Ename LIKE '%K';","SELECT * FROM EMPLOYEE WHERE Ename LIKE 'K%';","SELECT * FROM EMPLOYEE WHERE Ename LIKE '_K';"],answer:2},
+{q:"What does the query SELECT Ename FROM EMPLOYEE WHERE Ename LIKE '_a%'; return?",options:["Names starting with 'a'","Names ending with 'a'","Names with 'a' as the second character","Names with exactly two characters"],answer:2},
+{q:"Which wildcard is used to match exactly one character in SQL?",options:["%","_",".","*"],answer:1},
+{q:"Which SQL statement is used to modify existing data in a table?",options:["SELECT","INSERT","UPDATE","ALTER"],answer:2},
+{q:"What will happen if the WHERE clause omitted in an UPDATE statement?",options:["No rows updated","Only the first row updated","All rows are updated","Syntax error"],answer:2},
+{q:"Which of the following is a correct syntax to update multiple columns in SQL?",options:["UPDATE table SET col1 = val1 AND col2 = val2;","UPDATE table SET col1 = val1, col2 = val2;","UPDATE table SET (col1, col2) = (val1, val2);","MODIFY table SET col1 = val1, col2 = val2."],answer:1},
+{q:"Which SQL statement is used to remove records from a table?",options:["REMOVE","DELETE","DROP","ERASE"],answer:1},
+{q:"Which of the following is the correct syntax to delete a student with RollNumber =2?",options:["DELETE STUDENT WHERE RollNumber = 2;","REMOVE FROM STUDENT WHERE RollNumber = 2;","DELETE FROM STUDENT WHERE RollNumber = 2;","DELETE * FROM STUDENT WHERE RollNumber = 2;"],answer:2},
+{q:"What does the POWER(2,3) function return?",options:["6","8","9","5"],answer:1},
+{q:"Which SQL function used in wrapping a number to a specific number of decimal places?",options:["MOD()","ROUND()","POWER()","FLOOR()"],answer:1},
+{q:"What is the result of MOD(21, 2)?",options:["10.5","2","1","0"],answer:2},
+{q:"What will ROUND(2912.564, 1) return?",options:["2912.56","2912.6","2913","2912"],answer:1},
+{q:"Which SQL function returns the number of characters in a string?",options:["LENGTH()","MID()","LEFT()","INSTR()"],answer:0},
+{q:"What is the purpose of the INSTR() function in SQL?",options:["To convert a string to uppercase","To find the position of a substring","To round off a number","To extract a substring"],answer:1},
+{q:"Which function removes both leading and trailing spaces from a string?",options:["LTRIM()","RTRIM()","TRIM()","MID()"],answer:2},
+{q:"What will the query SELECT LEFT(Email, INSTR(Email, '@')-1) FROM CUSTOMER; return?",options:["The domain name of the email","The full email address","The username part before '@'","The length of the email"],answer:2},
+{q:"Which query will display customer emails that contain the word 'yahoo'?",options:["SELECT * FROM CUSTOMER WHERE Email = 'yahoo';","SELECT * FROM CUSTOMER WHERE Email LIKE '%yahoo%';","SELECT * FROM CUSTOMER WHERE Email IN ('yahoo');","SELECT * FROM CUSTOMER WHERE Email IS 'yahoo';"],answer:1},
+{q:"What does the NOW() function return in SQL?",options:["Current year","Current date only","Current system date and time","Current time only"],answer:2},
+{q:"Which function returns the name of the day from a given date?",options:["DAY()","DAYNAME()","DATE()","NOW()"],answer:1},
+{q:"What will the query SELECT MONTHNAME('2003-11-28'); return?",options:["11","November","28","Friday"],answer:1},
+{q:"Which function is used to extract the year from a date?",options:["YEAR()","DATE()","MONTH()","DAY()"],answer:0},
+{q:"Which of the following is a multiple row (aggregate) function?",options:["ROUND()","DAYNAME()","MAX()","MONTHNAME()"],answer:2},
+{q:"What does the query SELECT SUM(SalePrice) FROM SALE WHERE CustID = 'C0001'; do?",options:["Adds all SalePrice values in the SALE table","Adds SalePrice values for customer C0001","Displays SalePrice for customer C0001","Counts SalePrice entries for customer C0001"],answer:1},
+{q:"Which SQL function returns the average of values in a column?",options:["SUM()","AVG()","COUNT()","MAX()"],answer:1},
+{q:"What does the COUNT(*) function return?",options:["Number of non-null values in a column","Number of distinct values","Total number of rows in a table","Sum of all numeric values"],answer:2},
+{q:"Which function ignores NULL values while counting?",options:["COUNT(*)","COUNT(column)","SUM(column)","MAX(column)"],answer:1},
+{q:"What will the query SELECT COUNT(DISTINCT Model) FROM INVENTORY; return?",options:["Total number of models","Number of rows in INVENTORY","Number of unique model types","Number of NULL values in Model"],answer:2},
+{q:"Which aggregate function return the largest value in a column?",options:["MIN()","MAX()","COUNT()","AVG()"],answer:1},
+{q:"What is the output of SELECT AVG(Price) FROM INVENTORY WHERE Model = 'LXI';?",options:["Average price of all cars","Average price of LXI model cars","Total price of LXI model cars","Number of LXI model cars"],answer:1},
+{q:"Which operation combines rows from two tables and removes duplicates?",options:["INTERSECT","MINUS","UNION","JOIN"],answer:2},
+{q:"What does the INTERSECT operation return?",options:["All rows from both tables","Rows that are present only on the first table","Common rows from both tables","Rows that present only on the second table"],answer:2},
+{q:"Which operation returns rows that are in the first table but not in the second?",options:["UNION","INTERSECT","MINUS","SELECT"],answer:2},
+{q:"Which of the following conditions must be met to apply UNION, INTERSECT, or MINUS operations?",options:["Tables must have the same number of rows","Tables must have the same number of columns and matching data types","Tables must be in sorted order","Tables must have primary keys"],answer:1},
+{q:"What will the result of DANCE INTERSECT MUSIC contain?",options:["All students from both events","Students only in MUSIC","Students only in DANCE","Students participate in both events"],answer:3},
+{q:"What does the Cartesian product of two tables return?",options:["Only matching rows","All combinations of rows from both tables","Rows with NULL values","Duplicate rows only"],answer:1},
+{q:"If table A has 4 rows and table B has 5 rows, how many rows the Cartesian product A × B contain?",options:["9","20","4","5"],answer:1},
+{q:"What is the degree of the resulting relation when two Tables of degree three are combined by Cartesian product?",options:["3","6","9","1"],answer:1},
+{q:"Which clause is used to filter rows after applying Cartesian product based on a condition?",options:["GROUP BY","HAVING","WHERE","ORDER BY"],answer:2},
+{q:"What does the JOIN operation do in SQL?",options:["Combines all possible rows from two tables","Combines rows from two tables based on a condition","Removes duplicate rows from a table","Filters rows based on a condition"],answer:1},
+{q:"Which JOIN type removes redundant columns when joining two tables with a common attribute?",options:["INNER JOIN","LEFT JOIN","NATURAL JOIN","CROSS JOIN"],answer:2},
+{q:"What is the result of the query SELECT * FROM UNIFORM U JOIN COST C ON U.UCode = C.UCode;?",options:["Cartesian product of UNIFORM and COST","Only rows with matching UCode from both tables","All rows from UNIFORM","All rows from COST"],answer:1},
+{q:"How many JOIN operation are needed to combine N tables using equality condition?",options:["N","N+1","N–1","2"],answer:2},
+{q:"Identify the correct date function from the following.",options:["FINDDATE()","JULIANDATE()","NOW()","SYSTEM_DATE()"],answer:2},
+{q:"The SQL command to modify the structure of a table is",options:["CREATE","UPDATE","INSERT","ALTER"],answer:3},
+{q:"The most popular query language used by RDBMS is",options:["MYSQL","PYTHON","C++","JAVA"],answer:0},
+{q:"Which of the following is a string single row built in function",options:["Length()","Min()","Now()","Count()"],answer:0},
+{q:"Which datatype is used to hold numbers with decimal points in MYSQL?",options:["FLOAT","DATE","INT","INTEGER"],answer:0},
+{q:"The clause used to enforce condition is",options:["Distinct","group by","order by","where"],answer:3}
+];
+let currentQuestionIndex=0;let userAnswers=new Array(questions.length).fill(null);
+let timerInterval;let timeRemaining=60*60;let startTime;
+function initializeTest(){startTime=Date.now();renderQuestions();updateProgress();startTimer();}
+function renderQuestions(){const container=document.getElementById('questionsContainer');container.innerHTML='';
+questions.forEach((q,index)=>{const questionDiv=document.createElement('div');questionDiv.className='question-container';
+if(index===0)questionDiv.classList.add('active');
+questionDiv.innerHTML=`<div class="question-header"><span class="question-number">Question ${index+1} of ${questions.length}</span></div>
+<div class="question-text">${q.q}</div><ul class="options">
+${q.options.map((option,optIndex)=>`<li class="option" onclick="selectAnswer(${index},${optIndex})" data-index="${optIndex}">
+${String.fromCharCode(97+optIndex)}) ${option}</li>`).join('')}</ul>`;container.appendChild(questionDiv);});}
+function selectAnswer(questionIndex,optionIndex){userAnswers[questionIndex]=optionIndex;
+const questionDiv=document.querySelectorAll('.question-container')[questionIndex];
+const options=questionDiv.querySelectorAll('.option');
+options.forEach(opt=>opt.classList.remove('selected'));options[optionIndex].classList.add('selected');updateProgress();}
+function updateProgress(){const answered=userAnswers.filter(a=>a!==null).length;
+const percentage=(answered/questions.length)*100;document.getElementById('progressBar').style.width=percentage+'%';}
+function nextQuestion(){if(currentQuestionIndex<questions.length-1){
+document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');currentQuestionIndex++;
+document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');updateNavigationButtons();updateQuestionCounter();}}
+function previousQuestion(){if(currentQuestionIndex>0){
+document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');currentQuestionIndex--;
+document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');updateNavigationButtons();updateQuestionCounter();}}
+function updateNavigationButtons(){document.getElementById('prevBtn').disabled=currentQuestionIndex===0;
+if(currentQuestionIndex===questions.length-1){document.getElementById('nextBtn').style.display='none';
+document.getElementById('submitBtn').style.display='block';}else{document.getElementById('nextBtn').style.display='block';
+document.getElementById('submitBtn').style.display='none';}}
+function updateQuestionCounter(){document.getElementById('currentQuestion').textContent=currentQuestionIndex+1;}
+function startTimer(){timerInterval=setInterval(()=>{timeRemaining--;const minutes=Math.floor(timeRemaining/60);
+const seconds=timeRemaining%60;const timerDisplay=document.getElementById('timer');
+timerDisplay.textContent=`⏱️ ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+if(timeRemaining<=300){timerDisplay.classList.add('warning');}if(timeRemaining<=0){clearInterval(timerInterval);submitTest();}},1000);}
+function submitTest(){clearInterval(timerInterval);let correct=0;let wrong=0;
+userAnswers.forEach((answer,index)=>{if(answer===questions[index].answer){correct++;}else if(answer!==null){wrong++;}});
+const percentage=Math.round((correct/questions.length)*100);
+const timeTaken=Math.floor((Date.now()-startTime)/1000);const minutes=Math.floor(timeTaken/60);const seconds=timeTaken%60;
+document.getElementById('questionsContainer').style.display='none';document.querySelector('.navigation').style.display='none';
+const resultContainer=document.getElementById('resultContainer');resultContainer.classList.add('active');
+document.getElementById('scorePercentage').textContent=percentage+'%';document.getElementById('correctAnswers').textContent=correct;
+document.getElementById('wrongAnswers').textContent=wrong;
+document.getElementById('timeTaken').textContent=`${minutes}:${seconds.toString().padStart(2,'0')}`;
+const scoreCircle=document.getElementById('scoreCircle');
+if(percentage>=90)scoreCircle.className='score-circle excellent';
+else if(percentage>=70)scoreCircle.className='score-circle good';
+else if(percentage>=50)scoreCircle.className='score-circle average';
+else scoreCircle.className='score-circle poor';}
+function showReview(){const reviewSection=document.getElementById('reviewSection');reviewSection.style.display='block';
+reviewSection.innerHTML='<h2 style="margin-bottom: 20px;">📝 Detailed Answer Review</h2>';
+questions.forEach((q,index)=>{const userAnswer=userAnswers[index];const isCorrect=userAnswer===q.answer;
+const reviewDiv=document.createElement('div');reviewDiv.className=`review-question ${isCorrect?'correct':'wrong'}`;
+reviewDiv.innerHTML=`<h4>Question ${index+1}: ${isCorrect?'✅ Correct':'❌ Wrong'}</h4><p><strong>${q.q}</strong></p>
+<p style="margin-top: 10px;"><strong>Your Answer:</strong> ${userAnswer!==null?q.options[userAnswer]:'Not Answered'}<br>
+<strong>Correct Answer:</strong> ${q.options[q.answer]}</p>`;reviewSection.appendChild(reviewDiv);});
+document.getElementById('resultContainer').style.display='none';}
+function restartTest(){location.reload();}
+window.onload=initializeTest;
+</script>
+</body>
+</html>

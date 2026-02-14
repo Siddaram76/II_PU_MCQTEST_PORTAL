@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue - MCQ Test | Class XII Computer Science</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .timer-section {
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .timer.warning {
+            color: #e74c3c;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .progress-bar {
+            flex: 1;
+            margin: 0 30px;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            padding: 30px;
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .question-number {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            background: #f8f9fa;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .option.wrong {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-container {
+            display: none;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .score-circle.excellent {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .score-circle.good {
+            background: linear-gradient(135deg, #17a2b8 0%, #3498db 100%);
+        }
+
+        .score-circle.average {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        }
+
+        .score-circle.poor {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .review-section {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .review-question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .review-question.correct {
+            border-left: 4px solid #28a745;
+        }
+
+        .review-question.wrong {
+            border-left: 4px solid #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .timer-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .progress-bar {
+                margin: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Queue Data Structure</h1>
+            <p>Class XII Computer Science - MCQ Test</p>
+        </div>
+
+        <div class="timer-section">
+            <div class="timer" id="timer">⏱️ 50:00</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="question-number">
+                <span id="currentQuestion">1</span> / <span id="totalQuestions">61</span>
+            </div>
+        </div>
+
+        <div id="questionsContainer"></div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()">← Previous</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitTest()" style="display: none;">Submit Test</button>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <h2>Test Completed! 🎉</h2>
+            <div class="score-circle" id="scoreCircle">
+                <div>
+                    <div id="scorePercentage">0%</div>
+                    <div style="font-size: 16px; margin-top: 10px;">Score</div>
+                </div>
+            </div>
+            <div class="result-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Questions</div>
+                    <div class="stat-value" id="totalQuestionsResult">61</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Correct Answers</div>
+                    <div class="stat-value" id="correctAnswers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Wrong Answers</div>
+                    <div class="stat-value" id="wrongAnswers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Time Taken</div>
+                    <div class="stat-value" id="timeTaken">0:00</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="showReview()">View Detailed Review</button>
+            <button class="btn btn-secondary" onclick="restartTest()" style="margin-left: 10px;">Retake Test</button>
+        </div>
+
+        <div class="review-section" id="reviewSection" style="display: none;"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "Which of the following is an ordered linear list of elements having different ends for adding and removing elements in it?",
+                options: ["Stack", "Queue", "Searching", "Sorting"],
+                answer: 1
+            },
+            {
+                q: "An arrangement of linear data structure in which addition and removal of elements can happen from any end is known as",
+                options: ["Stack", "Queue", "Deque", "Enqueue"],
+                answer: 2
+            },
+            {
+                q: "Following is a linear list of elements in which insertion and deletion takes place from different ends.",
+                options: ["Stack", "Queue", "Searching", "Sorting"],
+                answer: 1
+            },
+            {
+                q: "What is the working principle of queue?",
+                options: ["LIFO", "FIFO", "FILO", "LILO"],
+                answer: 1
+            },
+            {
+                q: "With respect to queue data structure which of the below statement is true?",
+                options: [
+                    "Addition and removal of elements take place at front end",
+                    "Addition and removal of elements take place at rear end",
+                    "Addition of element is at rear end and removal of elements from the front end",
+                    "Addition of element is at front end and removal of elements from the rear end"
+                ],
+                answer: 2
+            },
+            {
+                q: "Which of the below statement is not correct with respect to queue?",
+                options: [
+                    "Queue is a linear list of elements",
+                    "Operations on Queue are performed in FIFO order",
+                    "Insertion operation in queue is called Enqueue",
+                    "Deletion operation in queue is called pop"
+                ],
+                answer: 3
+            },
+            {
+                q: "Which data structure is used to insert and delete elements in FIFO order?",
+                options: ["Stack", "Queue", "Searching", "Sorting"],
+                answer: 1
+            },
+            {
+                q: "In which order elements of queue are accessed?",
+                options: ["LIFO", "FIFO", "LILO", "FILO"],
+                answer: 1
+            },
+            {
+                q: "Queue follows:",
+                options: ["LIFO principle", "FIFO principle", "LILO principle", "FILO principle"],
+                answer: 1
+            },
+            {
+                q: "FIFO stands for:",
+                options: ["First-In-First-Out", "Forward-In-First-out", "First-In-Forward-out", "Forward-In-Forward-out"],
+                answer: 0
+            },
+            {
+                q: "FCFS stands for:",
+                options: ["First Come First Service", "First Count First Served", "First Come First Served", "First Come First System"],
+                answer: 2
+            },
+            {
+                q: "FIFO is also called as:",
+                options: ["FCFS", "LIFO", "FSFC", "FILO"],
+                answer: 0
+            },
+            {
+                q: "At which end, an element can be inserted in queue?",
+                options: ["Top", "Peek", "Rear", "Front"],
+                answer: 2
+            },
+            {
+                q: "From which end, an element is deleted from queue?",
+                options: ["Top", "Peek", "Rear", "Front"],
+                answer: 3
+            },
+            {
+                q: "If elements are inserted into queue in following order 'A','S','D' and 'F' and then elements are removed, in which order elements are removed?",
+                options: ["'A','S','D','F'", "'F','D','S','A'", "'A','F','S','D'", "'S','D','A','F'"],
+                answer: 0
+            },
+            {
+                q: "Which operation is used to insert a new element to the queue at the rear end?",
+                options: ["Enqueue", "Dequeue", "Isempty", "Peek"],
+                answer: 0
+            },
+            {
+                q: "Which exception will occur when inserting elements beyond capacity of the queue?",
+                options: ["Underflow", "Overflow", "Dequeue", "Enqueue"],
+                answer: 1
+            },
+            {
+                q: "Which operation is used to remove one element at a time from the front of the queue?",
+                options: ["Enqueue", "Dequeue", "Isempty", "Peek"],
+                answer: 1
+            },
+            {
+                q: "Which exception will occur when trying to delete an element from an empty queue?",
+                options: ["Underflow", "Overflow", "Dequeue", "Enqueue"],
+                answer: 0
+            },
+            {
+                q: "The operation is used to view elements at the front of the queue, without removing it from the Queue is",
+                options: ["Enqueue", "Dequeue", "Isempty", "Peek"],
+                answer: 3
+            },
+            {
+                q: "Which operation is used to check whether the queue has any element or not?",
+                options: ["Enqueue", "Dequeue", "Isempty", "Peek"],
+                answer: 2
+            },
+            {
+                q: "The operation used to view element at the front of the Queue, without removing it from the Queue is",
+                options: ["Enqueue", "Dequeue", "Isempty", "Peek"],
+                answer: 3
+            },
+            {
+                q: "Which operation is used to simply read, but not to delete the element at the front end of the queue?",
+                options: ["Enqueue", "Dequeue", "Isempty", "Peek"],
+                answer: 3
+            },
+            {
+                q: "Which operation is used to check whether any more elements can be added to the queue or not?",
+                options: ["Enqueue", "Isfull", "Isempty", "Peek"],
+                answer: 1
+            },
+            {
+                q: "Which operation is used to avoid overflow exceptions while performing enqueue operation?",
+                options: ["Enqueue", "Isfull", "Isempty", "Peek"],
+                answer: 1
+            },
+            {
+                q: "Which operation is used to avoid underflow exception while performing dequeue operation?",
+                options: ["Enqueue", "Isfull", "Isempty", "Peek"],
+                answer: 2
+            },
+            {
+                q: "Which function always adds an element to the rear end of the queue?",
+                options: ["push", "insert", "append", "add"],
+                answer: 2
+            },
+            {
+                q: "What is the index of pop method to delete an element from the front end of the queue?",
+                options: ["1", "0", "n", "n-1"],
+                answer: 1
+            },
+            {
+                q: "Which data type is used to implement a queue in Python?",
+                options: ["Tuple", "Dictionary", "List", "None"],
+                answer: 2
+            },
+            {
+                q: "Which built-in-function (method) is used to create an empty queue?",
+                options: ["Enqueue()", "list()", "append()", "insert()"],
+                answer: 1
+            },
+            {
+                q: "Which built-in-function is used to insert a new element at the end of queue?",
+                options: ["Enqueue()", "list()", "append()", "insert()"],
+                answer: 2
+            },
+            {
+                q: "Which built-in-function is used to delete an element from the front of the queue?",
+                options: ["Enqueue()", "pop()", "append()", "Dequeue()"],
+                answer: 1
+            },
+            {
+                q: "Which built-in-function is used to check, if the queue has an element or not?",
+                options: ["isEmpty()", "list()", "append()", "len()"],
+                answer: 3
+            },
+            {
+                q: "Which built-in-function (method) is used to find the number of elements in the queue?",
+                options: ["Enqueue()", "isEmpty()", "isFull()", "len()"],
+                answer: 3
+            },
+            {
+                q: "In which condition, queue overflow occurs?",
+                options: [
+                    "Queue is full and Enqueue() is called",
+                    "Queue is empty and Enqueue() is called",
+                    "Queue is full and Dequeue() is called",
+                    "Queue is empty and Dequeue() is called"
+                ],
+                answer: 0
+            },
+            {
+                q: "In which condition, queue underflow exception occurs?",
+                options: [
+                    "Queue is full and Enqueue() is called",
+                    "Queue is empty and Enqueue() is called",
+                    "Queue is full and Dequeue() is called",
+                    "Queue is empty and Dequeue() is called"
+                ],
+                answer: 3
+            },
+            {
+                q: "Deque is a version of queue which allows insertion and deletion at",
+                options: ["front end", "rear end", "both ends", "middle"],
+                answer: 2
+            },
+            {
+                q: "Which of the following is a data structure where elements can be added or removed at either end, but not in the middle?",
+                options: ["Enqueue", "Dequeue", "Deque", "Queue"],
+                answer: 2
+            },
+            {
+                q: "Which of the following is an arrangement in which addition and removal of element(s) can happen from any end?",
+                options: ["Enqueue", "Dequeue", "Deque", "Queue"],
+                answer: 2
+            },
+            {
+                q: "Which of the following permits insertion and deletion operations from any end?",
+                options: ["Enqueue", "Dequeue", "Deque", "Queue"],
+                answer: 2
+            },
+            {
+                q: "Which of the following data structure does not apply any restriction on the side from which addition/removal of elements should happen?",
+                options: ["Enqueue", "Dequeue", "Deque", "Queue"],
+                answer: 2
+            },
+            {
+                q: "Which of the following is also known as double ended queue?",
+                options: ["Enqueue", "Dequeue", "Deque", "Queue"],
+                answer: 2
+            },
+            {
+                q: "Identify the not correct statement about Deque",
+                options: [
+                    "It is a data structure where elements can be added or removed at either end",
+                    "Adding or removal of elements can happen in the middle",
+                    "Deque can support both stack and queue operations",
+                    "Insertfront operation is used to insert new element at the front of the deque"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which operation is used to insert a new element at the front of the deque?",
+                options: ["Enqueue", "Dequeue", "Insertrear", "Insertfront"],
+                answer: 3
+            },
+            {
+                q: "Which operation is used to insert a new element at the rear of the deque?",
+                options: ["Enqueue", "Dequeue", "Insertrear", "Insertfront"],
+                answer: 2
+            },
+            {
+                q: "Which operation is used to remove an element from the front of the deque?",
+                options: ["Enqueue", "Dequeue", "Deletionrear", "Deletionfront"],
+                answer: 3
+            },
+            {
+                q: "Which operation is used to remove one element at a time from the rear of the deque?",
+                options: ["Enqueue", "Dequeue", "Deletionrear", "Deletionfront"],
+                answer: 2
+            },
+            {
+                q: "Which built-in-function (method) is used to create an empty deque?",
+                options: ["Enqueue()", "list()", "append()", "insert()"],
+                answer: 1
+            },
+            {
+                q: "Which built-in-function (method) is used to insert an element at the front of deque?",
+                options: ["Enqueue()", "list()", "Insertrear()", "insert()"],
+                answer: 3
+            },
+            {
+                q: "Which operation is used to check the presence of element(s) in deque?",
+                options: ["Enqueue", "Isfull", "Isempty", "Peek"],
+                answer: 2
+            },
+            {
+                q: "Which operation is used to read value from the front of deque, without removing it from the queue when the queue is not empty?",
+                options: ["Getfront", "Insertfront", "Deletionrear", "Peek"],
+                answer: 0
+            },
+            {
+                q: "Which operation is used to read value from the rear of the deque, without removing it from the deque?",
+                options: ["Getfront", "Getrear", "Deletionrear", "Peek"],
+                answer: 1
+            },
+            {
+                q: "In a deque, if insertion and deletion of elements is done from the same end, it will behave as",
+                options: ["Queue", "Stack", "List", "String"],
+                answer: 1
+            },
+            {
+                q: "In a deque, if insertion and deletion of elements is done from different ends, it will behave as",
+                options: ["Queue", "Stack", "List", "String"],
+                answer: 0
+            },
+            {
+                q: "Assertion(A): Customers forming a line at the cash counter in a bank is an example of queue in everyday life\nReason(R): The ordering principle of queue is LIFO",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion(A): Customers forming a line at the cash counter in a bank is an example of queue in everyday life\nReason(R): The ordering principle of queue is FIFO",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion(A): Queue is a non linear data structure\nReason(R): Insertion and deletion takes place at same end",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is also false"
+                ],
+                answer: 3
+            },
+            {
+                q: "Assertion(A): Queue is used to send print commands using a shared printer\nReason(R): The ordering principle of queue is FCFS",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion(A): Queue is used to send print commands using a shared printer\nReason(R): The ordering principle of queue is LIFO",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion(A): Deque is also known as Double ended queue\nReason(R): Deque allows insertion, deletion operation from any end",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion(A): Queue is also known as Double ended queue\nReason(R): Queue allows insertion, deletion operation from any end",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 3
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let timerInterval;
+        let timeRemaining = 50 * 60;
+        let startTime;
+
+        function initializeTest() {
+            startTime = Date.now();
+            renderQuestions();
+            updateProgress();
+            startTimer();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                if (index === 0) questionDiv.classList.add('active');
+
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1} of ${questions.length}</span>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                    <ul class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <li class="option" onclick="selectAnswer(${index}, ${optIndex})" data-index="${optIndex}">
+                                ${String.fromCharCode(97 + optIndex)}) ${option}
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectAnswer(questionIndex, optionIndex) {
+            userAnswers[questionIndex] = optionIndex;
+            
+            const questionDiv = document.querySelectorAll('.question-container')[questionIndex];
+            const options = questionDiv.querySelectorAll('.option');
+            
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[optionIndex].classList.add('selected');
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null).length;
+            const percentage = (answered / questions.length) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');
+                currentQuestionIndex++;
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');
+                updateNavigationButtons();
+                updateQuestionCounter();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');
+                currentQuestionIndex--;
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');
+                updateNavigationButtons();
+                updateQuestionCounter();
+            }
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+        }
+
+        function updateQuestionCounter() {
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                
+                const timerDisplay = document.getElementById('timer');
+                timerDisplay.textContent = `⏱️ ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeRemaining <= 300) {
+                    timerDisplay.classList.add('warning');
+                }
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            
+            let correct = 0;
+            let wrong = 0;
+            
+            userAnswers.forEach((answer, index) => {
+                if (answer === questions[index].answer) {
+                    correct++;
+                } else if (answer !== null) {
+                    wrong++;
+                }
+            });
+            
+            const percentage = Math.round((correct / questions.length) * 100);
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            
+            document.getElementById('questionsContainer').style.display = 'none';
+            document.querySelector('.navigation').style.display = 'none';
+            
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.classList.add('active');
+            
+            document.getElementById('scorePercentage').textContent = percentage + '%';
+            document.getElementById('correctAnswers').textContent = correct;
+            document.getElementById('wrongAnswers').textContent = wrong;
+            document.getElementById('timeTaken').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            const scoreCircle = document.getElementById('scoreCircle');
+            if (percentage >= 90) scoreCircle.className = 'score-circle excellent';
+            else if (percentage >= 70) scoreCircle.className = 'score-circle good';
+            else if (percentage >= 50) scoreCircle.className = 'score-circle average';
+            else scoreCircle.className = 'score-circle poor';
+        }
+
+        function showReview() {
+            const reviewSection = document.getElementById('reviewSection');
+            reviewSection.style.display = 'block';
+            reviewSection.innerHTML = '<h2 style="margin-bottom: 20px;">📝 Detailed Answer Review</h2>';
+            
+            questions.forEach((q, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === q.answer;
+                
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = `review-question ${isCorrect ? 'correct' : 'wrong'}`;
+                
+                reviewDiv.innerHTML = `
+                    <h4>Question ${index + 1}: ${isCorrect ? '✅ Correct' : '❌ Wrong'}</h4>
+                    <p><strong>${q.q}</strong></p>
+                    <p style="margin-top: 10px;">
+                        <strong>Your Answer:</strong> ${userAnswer !== null ? q.options[userAnswer] : 'Not Answered'}<br>
+                        <strong>Correct Answer:</strong> ${q.options[q.answer]}
+                    </p>
+                `;
+                
+                reviewSection.appendChild(reviewDiv);
+            });
+            
+            document.getElementById('resultContainer').style.display = 'none';
+        }
+
+        function restartTest() {
+            location.reload();
+        }
+
+        window.onload = initializeTest;
+    </script>
+</body>
+</html>

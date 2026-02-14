@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stack - MCQ Test | Class XII Computer Science</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .timer-section {
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .timer.warning {
+            color: #e74c3c;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .progress-bar {
+            flex: 1;
+            margin: 0 30px;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            padding: 30px;
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .question-number {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            background: #f8f9fa;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .option.wrong {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-container {
+            display: none;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .score-circle.excellent {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .score-circle.good {
+            background: linear-gradient(135deg, #17a2b8 0%, #3498db 100%);
+        }
+
+        .score-circle.average {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        }
+
+        .score-circle.poor {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .review-section {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .review-question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .review-question.correct {
+            border-left: 4px solid #28a745;
+        }
+
+        .review-question.wrong {
+            border-left: 4px solid #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .timer-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .progress-bar {
+                margin: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Stack Data Structure</h1>
+            <p>Class XII Computer Science - MCQ Test</p>
+        </div>
+
+        <div class="timer-section">
+            <div class="timer" id="timer">⏱️ 50:00</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="question-number">
+                <span id="currentQuestion">1</span> / <span id="totalQuestions">61</span>
+            </div>
+        </div>
+
+        <div id="questionsContainer"></div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()">← Previous</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitTest()" style="display: none;">Submit Test</button>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <h2>Test Completed! 🎉</h2>
+            <div class="score-circle" id="scoreCircle">
+                <div>
+                    <div id="scorePercentage">0%</div>
+                    <div style="font-size: 16px; margin-top: 10px;">Score</div>
+                </div>
+            </div>
+            <div class="result-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Questions</div>
+                    <div class="stat-value" id="totalQuestionsResult">61</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Correct Answers</div>
+                    <div class="stat-value" id="correctAnswers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Wrong Answers</div>
+                    <div class="stat-value" id="wrongAnswers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Time Taken</div>
+                    <div class="stat-value" id="timeTaken">0:00</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="showReview()">View Detailed Review</button>
+            <button class="btn btn-secondary" onclick="restartTest()" style="margin-left: 10px;">Retake Test</button>
+        </div>
+
+        <div class="review-section" id="reviewSection" style="display: none;"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "A mechanism to store, organize and access data along with operations that can be efficiently performed on the data is",
+                options: ["datatype", "data structure", "data list", "data collection"],
+                answer: 1
+            },
+            {
+                q: "Which of the following an example of a data structure?",
+                options: ["print", "string", "function", "for loop"],
+                answer: 1
+            },
+            {
+                q: "What type of data structure is string?",
+                options: [
+                    "It contains sequence of characters",
+                    "It contains sequence of integers",
+                    "It is non linear data structure",
+                    "It contains elements with mixed datatype"
+                ],
+                answer: 0
+            },
+            {
+                q: "A data structure that contains sequence of elements where each character is",
+                options: ["int", "float", "list", "string"],
+                answer: 3
+            },
+            {
+                q: "A sequence data structure in which each element may be of different types is",
+                options: ["int", "float", "list", "string"],
+                answer: 2
+            },
+            {
+                q: "LIFO stands for",
+                options: ["Last in Front Out", "Left In First Out", "Last In First Out", "Last In Forward Out"],
+                answer: 2
+            },
+            {
+                q: "Which data structure follows Last-In-First-Out principle?",
+                options: ["Queue", "Stack", "Deque", "integer"],
+                answer: 1
+            },
+            {
+                q: "The principle of stack is",
+                options: ["FILO", "LILO", "FIFO", "LIFO"],
+                answer: 3
+            },
+            {
+                q: "Stack implements which of the following arrangement",
+                options: ["FILO", "LILO", "FIFO", "LIFO"],
+                answer: 3
+            },
+            {
+                q: "Which of the following is the application uses LIFO principle",
+                options: [
+                    "Confirmation of train ticket is in waiting list",
+                    "Calling customer service centre through IVRS, waiting till a support person is available",
+                    "Sending print commands from multiple files using shared printer",
+                    "Bangles worn on wrist"
+                ],
+                answer: 3
+            },
+            {
+                q: "Which of the following statement is correct about stack?",
+                options: [
+                    "Addition of new element is from front, removal of existing element is from rear end",
+                    "Addition of new element is from rear, removal of existing element is from front end",
+                    "Addition of new element and removal of existing element happens from middle",
+                    "Addition of new element, removal of existing element takes place at same end TOP"
+                ],
+                answer: 3
+            },
+            {
+                q: "Which statement is not correct about stack?",
+                options: [
+                    "Stack is a linear data structure",
+                    "Stack does not follow LIFO rule",
+                    "PUSH operation may result into overflow condition",
+                    "Stack is used to reverse a string"
+                ],
+                answer: 1
+            },
+            {
+                q: "The arrangement of elements in linear order where adding new elements or removal of existing elements take place from the same end",
+                options: ["Stack", "Queue", "Deque", "Deck"],
+                answer: 0
+            },
+            {
+                q: "In stack data structure, from which end does addition of new elements and removal of existing elements take place?",
+                options: ["END", "TOP", "REAR", "TAIL"],
+                answer: 1
+            },
+            {
+                q: "The fundamental operations performed on the stack are",
+                options: ["insert,delete", "push,pop", "push,delete", "insert,pop"],
+                answer: 1
+            },
+            {
+                q: "Which operation adds a new element to the TOP of the stack?",
+                options: ["Push", "Pop", "Peek", "insert"],
+                answer: 0
+            },
+            {
+                q: "Addition of new element at the TOP of the stack is called",
+                options: ["Push", "Peek", "Pop", "overflow"],
+                answer: 0
+            },
+            {
+                q: "Which operation is used to remove an element from the Top of the stack?",
+                options: ["Push", "Pop", "Peek", "Is Empty"],
+                answer: 1
+            },
+            {
+                q: "Removal of existing element from TOP of the stack is called as",
+                options: ["push", "peek", "pop", "overflow"],
+                answer: 2
+            },
+            {
+                q: "Trying to add an element to a full stack results in which exception?",
+                options: ["overflow", "underflow", "peek", "empty stack"],
+                answer: 0
+            },
+            {
+                q: "Trying to delete an element from an empty stack results in an exception called",
+                options: ["overflow", "peek", "underflow", "full stack"],
+                answer: 2
+            },
+            {
+                q: "Which exception will occur when trying to add an element to a full stack?",
+                options: ["overflow", "underflow", "peek", "empty stack"],
+                answer: 0
+            },
+            {
+                q: "Which exception will occur when trying to remove an existing element from an empty stack?",
+                options: ["overflow", "underflow", "peek", "full stack"],
+                answer: 1
+            },
+            {
+                q: "Which datatype is used to implement stack in python?",
+                options: ["string", "int", "float", "list"],
+                answer: 3
+            },
+            {
+                q: "Which built-in method is used to insert a new element to Top of the stack in python?",
+                options: ["insert", "add", "append", "insert"],
+                answer: 2
+            },
+            {
+                q: "Which built-in method is used to remove an existing element from the stack in python?",
+                options: ["pop", "delete", "free", "remove"],
+                answer: 0
+            },
+            {
+                q: "Which of the following operation can result in stack overflow exception?",
+                options: [
+                    "Trying to add an element to a full stack",
+                    "Trying to add an element to an empty stack",
+                    "Trying to delete an element from an empty stack",
+                    "Trying to delete an element from full stack"
+                ],
+                answer: 0
+            },
+            {
+                q: "Which of the following operation can result in stack underflow exception?",
+                options: [
+                    "Trying to add an element to a full stack",
+                    "Trying to add an element to an empty stack",
+                    "Trying to delete an element from an empty stack",
+                    "Trying to delete an element from a full stack"
+                ],
+                answer: 2
+            },
+            {
+                q: "In which condition, stack overflow exception occurs?",
+                options: [
+                    "Stack is full and append() is called",
+                    "Stack is empty and append() is called",
+                    "Stack is full and pop() is called",
+                    "Stack is empty and pop() is called"
+                ],
+                answer: 0
+            },
+            {
+                q: "In which condition stack underflow exception occurs?",
+                options: [
+                    "Stack is full and append() is called",
+                    "Stack is empty and append() is called",
+                    "Stack is full and pop() is called",
+                    "Stack is empty and pop() is called"
+                ],
+                answer: 3
+            },
+            {
+                q: "If elements 10, 20, 30, 40 are inserted to the stack, Which is the correct order in which elements are popped?",
+                options: ["10,20,30,40", "20,30,40,10", "30,40,10,20", "40,30,20,10"],
+                answer: 3
+            },
+            {
+                q: "Which data structure is used to convert an expression in postfix notation?",
+                options: ["queue", "stack", "deque", "string"],
+                answer: 1
+            },
+            {
+                q: "Which built-in methods are used for implementing stack data structure in python?",
+                options: ["push,pop", "insert,delete", "append,pop", "append,remove"],
+                answer: 2
+            },
+            {
+                q: "Who introduced a different way of representing arithmetic expression called polish notation?",
+                options: ["Charles Babbage", "Dennis Ritchie", "Ken Thompson", "Jan Lukasiewicz"],
+                answer: 3
+            },
+            {
+                q: "Multiple chairs in a vertical pile is an application of which data structure?",
+                options: ["Stack", "Queue", "String", "List"],
+                answer: 0
+            },
+            {
+                q: "Which data structure is used to convert an infix expression to postfix?",
+                options: ["Stack", "Queue", "String", "List"],
+                answer: 0
+            },
+            {
+                q: "Which data structure is used to handle matching of parentheses in arithmetic expression?",
+                options: ["Stack", "Queue", "String", "List"],
+                answer: 0
+            },
+            {
+                q: "Which data structure is used to convert an infix expression to postfix or prefix expression?",
+                options: ["Stack", "Queue", "String", "List"],
+                answer: 0
+            },
+            {
+                q: "Which rule is used to evaluate an infix expression?",
+                options: ["BODMAS", "FIFO", "LIFO", "LILO"],
+                answer: 0
+            },
+            {
+                q: "In which notation operators are written before their operands?",
+                options: ["infix", "polish", "reverse polish", "postfix"],
+                answer: 1
+            },
+            {
+                q: "The other name of prefix notation is",
+                options: ["infix notation", "suffix notation", "polish notation", "reverse polish notation"],
+                answer: 2
+            },
+            {
+                q: "The other name of postfix notation is",
+                options: ["infix notation", "polish notation", "reverse polish notation", "suffix notation"],
+                answer: 2
+            },
+            {
+                q: "The other name of polish notation is",
+                options: ["infix notation", "prefix notation", "postfix notation", "suffix notation"],
+                answer: 1
+            },
+            {
+                q: "The other name of reverse polish notation is",
+                options: ["infix notation", "polish notation", "postfix notation", "suffix notation"],
+                answer: 2
+            },
+            {
+                q: "X+Y, Which representation is followed in the given expression",
+                options: ["infix", "postfix", "polish", "prefix"],
+                answer: 0
+            },
+            {
+                q: "The prefix notation of x+y is",
+                options: ["xy+", "(x+y)", "+xy", "(xy+)"],
+                answer: 2
+            },
+            {
+                q: "The postfix notation of x*y is",
+                options: ["xy*", "(*xy)", "*xy", "(x*y)"],
+                answer: 0
+            },
+            {
+                q: "Evaluate the following postfix expression and find the result of 78*+2",
+                options: ["56", "112", "23", "65"],
+                answer: 3
+            },
+            {
+                q: "Assertion(A): Stack follows the Last-In-First-Out\nReason (R): The new element is added and an existing element is removed from the same end",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion(A): Stack follows the FIFO order\nReason (R): In stack a new element is added and an existing element is removed from the one end only",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 2
+            },
+            {
+                q: "Assertion(A): Stack follows the First-In-First-Out principle\nReason (R): The new element is added and an existing element is removed from the same end",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 2
+            },
+            {
+                q: "Assertion(A):Stack data structure is used to reverse a string\nReason(R): The principle of stack is LIFO",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion(A): Stack data structure is used to reverse a string\nReason (R): The new element is added and an existing element is removed from the same end",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion(A):Stack data structure is used to reverse a string\nReason(R): The principle of stack is FIFO",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion(A):Stack data structure is used to redo/undo editing of text/image in text/image editor\nReason(R): The principle of stack is FIFO",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion(A): Stack data structure is used to redo/undo editing of text/image in text/image editor\nReason(R): The principle of stack is LIFO",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion(A): Stack data structure is used to maintain the history of browsed pages\nReason(R): The principle of stack is LIFO",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion(A): Stack data structure is used to maintain the history of browsed pages\nReason(R): The principle of stack is FIFO",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion(A): Stack follows LIFO rule\nReason(R): Insertion and deletion takes place at different ends.",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion(A): Stack data structure is used in accessing link of the last visited webpage.\nReason(R):The ordering principle is FIFO",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion(A):append() and pop() built-in methods are used in python implementation of stack.\nReason(R): Stack is linear arrangement of elements where insertion and deletion takes place at the same end.",
+                options: [
+                    "A is true, R is correct reason",
+                    "A is true, R is not correct reason",
+                    "A is false, R is correct reason",
+                    "A is false, R is not correct reason"
+                ],
+                answer: 0
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let timerInterval;
+        let timeRemaining = 50 * 60;
+        let startTime;
+
+        function initializeTest() {
+            startTime = Date.now();
+            renderQuestions();
+            updateProgress();
+            startTimer();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                if (index === 0) questionDiv.classList.add('active');
+
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1} of ${questions.length}</span>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                    <ul class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <li class="option" onclick="selectAnswer(${index}, ${optIndex})" data-index="${optIndex}">
+                                ${String.fromCharCode(97 + optIndex)}) ${option}
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectAnswer(questionIndex, optionIndex) {
+            userAnswers[questionIndex] = optionIndex;
+            
+            const questionDiv = document.querySelectorAll('.question-container')[questionIndex];
+            const options = questionDiv.querySelectorAll('.option');
+            
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[optionIndex].classList.add('selected');
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null).length;
+            const percentage = (answered / questions.length) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');
+                currentQuestionIndex++;
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');
+                updateNavigationButtons();
+                updateQuestionCounter();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');
+                currentQuestionIndex--;
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');
+                updateNavigationButtons();
+                updateQuestionCounter();
+            }
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+        }
+
+        function updateQuestionCounter() {
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                
+                const timerDisplay = document.getElementById('timer');
+                timerDisplay.textContent = `⏱️ ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeRemaining <= 300) {
+                    timerDisplay.classList.add('warning');
+                }
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            
+            let correct = 0;
+            let wrong = 0;
+            
+            userAnswers.forEach((answer, index) => {
+                if (answer === questions[index].answer) {
+                    correct++;
+                } else if (answer !== null) {
+                    wrong++;
+                }
+            });
+            
+            const percentage = Math.round((correct / questions.length) * 100);
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            
+            document.getElementById('questionsContainer').style.display = 'none';
+            document.querySelector('.navigation').style.display = 'none';
+            
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.classList.add('active');
+            
+            document.getElementById('scorePercentage').textContent = percentage + '%';
+            document.getElementById('correctAnswers').textContent = correct;
+            document.getElementById('wrongAnswers').textContent = wrong;
+            document.getElementById('timeTaken').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            const scoreCircle = document.getElementById('scoreCircle');
+            if (percentage >= 90) scoreCircle.className = 'score-circle excellent';
+            else if (percentage >= 70) scoreCircle.className = 'score-circle good';
+            else if (percentage >= 50) scoreCircle.className = 'score-circle average';
+            else scoreCircle.className = 'score-circle poor';
+        }
+
+        function showReview() {
+            const reviewSection = document.getElementById('reviewSection');
+            reviewSection.style.display = 'block';
+            reviewSection.innerHTML = '<h2 style="margin-bottom: 20px;">📝 Detailed Answer Review</h2>';
+            
+            questions.forEach((q, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === q.answer;
+                
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = `review-question ${isCorrect ? 'correct' : 'wrong'}`;
+                
+                reviewDiv.innerHTML = `
+                    <h4>Question ${index + 1}: ${isCorrect ? '✅ Correct' : '❌ Wrong'}</h4>
+                    <p><strong>${q.q}</strong></p>
+                    <p style="margin-top: 10px;">
+                        <strong>Your Answer:</strong> ${userAnswer !== null ? q.options[userAnswer] : 'Not Answered'}<br>
+                        <strong>Correct Answer:</strong> ${q.options[q.answer]}
+                    </p>
+                `;
+                
+                reviewSection.appendChild(reviewDiv);
+            });
+            
+            document.getElementById('resultContainer').style.display = 'none';
+        }
+
+        function restartTest() {
+            location.reload();
+        }
+
+        window.onload = initializeTest;
+    </script>
+</body>
+</html>

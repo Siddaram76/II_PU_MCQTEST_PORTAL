@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting - MCQ Test | Class XII Computer Science</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .timer-section {
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .timer.warning {
+            color: #e74c3c;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .progress-bar {
+            flex: 1;
+            margin: 0 30px;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            padding: 30px;
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .question-number {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            background: #f8f9fa;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .option.wrong {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-container {
+            display: none;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .score-circle.excellent {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .score-circle.good {
+            background: linear-gradient(135deg, #17a2b8 0%, #3498db 100%);
+        }
+
+        .score-circle.average {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        }
+
+        .score-circle.poor {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .review-section {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .review-question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .review-question.correct {
+            border-left: 4px solid #28a745;
+        }
+
+        .review-question.wrong {
+            border-left: 4px solid #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .timer-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .progress-bar {
+                margin: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔢 Sorting Algorithms</h1>
+            <p>Class XII Computer Science - MCQ Test</p>
+        </div>
+
+        <div class="timer-section">
+            <div class="timer" id="timer">⏱️ 30:00</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="question-number">
+                <span id="currentQuestion">1</span> / <span id="totalQuestions">36</span>
+            </div>
+        </div>
+
+        <div id="questionsContainer"></div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()">← Previous</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitTest()" style="display: none;">Submit Test</button>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <h2>Test Completed! 🎉</h2>
+            <div class="score-circle" id="scoreCircle">
+                <div>
+                    <div id="scorePercentage">0%</div>
+                    <div style="font-size: 16px; margin-top: 10px;">Score</div>
+                </div>
+            </div>
+            <div class="result-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Questions</div>
+                    <div class="stat-value" id="totalQuestionsResult">36</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Correct Answers</div>
+                    <div class="stat-value" id="correctAnswers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Wrong Answers</div>
+                    <div class="stat-value" id="wrongAnswers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Time Taken</div>
+                    <div class="stat-value" id="timeTaken">0:00</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="showReview()">View Detailed Review</button>
+            <button class="btn btn-secondary" onclick="restartTest()" style="margin-left: 10px;">Retake Test</button>
+        </div>
+
+        <div class="review-section" id="reviewSection" style="display: none;"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "Arranging elements of a data structure in ascending or descending order is known as",
+                options: ["Searching", "Hashing", "Sorting", "Collision"],
+                answer: 2
+            },
+            {
+                q: "What is the primary purpose of sorting in programming?",
+                options: [
+                    "To remove duplicates from a list",
+                    "To order or arrange elements in a particular order",
+                    "To print the elements sequentially",
+                    "To find the maximum or minimum element in a list"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which Python function is used to sort a list in ascending order?",
+                options: ["order()", "sort()", "ascending()", "arrange()"],
+                answer: 1
+            },
+            {
+                q: "In Bubble Sort, after each pass, what happens to the largest element in the list?",
+                options: [
+                    "It moves to the first position",
+                    "It moves to the middle of the list",
+                    "It moves to the last position",
+                    "It is removed from the list"
+                ],
+                answer: 2
+            },
+            {
+                q: "In bubble sort while sorting in ascending order, which element reaches its correct position after the first pass.",
+                options: [
+                    "The smallest element",
+                    "The middle element",
+                    "The largest element",
+                    "The second largest element"
+                ],
+                answer: 2
+            },
+            {
+                q: "How many passes does Bubble Sort make to sort a list of n elements?",
+                options: ["n passes", "n + 2 passes", "n - 1 passes", "log(n) passes"],
+                answer: 2
+            },
+            {
+                q: "Which sorting algorithm repeatedly compares adjacent elements and swaps them if they are unordered?",
+                options: ["Quick Sort", "Merge Sort", "Insertion Sort", "Bubble Sort"],
+                answer: 3
+            },
+            {
+                q: "How does Bubble Sort work to sort the elements of a list?",
+                options: [
+                    "By repeatedly selecting the smallest element and placing it at the beginning",
+                    "By repeatedly comparing adjacent elements and swapping them if unordered",
+                    "By dividing the list into sublists and sorting each sublist",
+                    "By selecting the largest element and placing it at the beginning"
+                ],
+                answer: 1
+            },
+            {
+                q: "In the selection sort algorithm, what does the left list contain during the sorting process?",
+                options: [
+                    "All unsorted elements",
+                    "The largest element found",
+                    "The element is not found",
+                    "The smallest elements found"
+                ],
+                answer: 3
+            },
+            {
+                q: "The smallest (or largest) element from the unsorted part is swapped with the first unsorted element in",
+                options: ["Selection Sort", "Bubble Sort", "Shell Sort", "Quick Sort"],
+                answer: 0
+            },
+            {
+                q: "The minimum element is swapped with the first unsorted element in",
+                options: ["Selection Sort", "Bubble Sort", "Shell Sort", "Quick Sort"],
+                answer: 0
+            },
+            {
+                q: "How does the size of the unsorted list change after each pass in the selection sort algorithm described?",
+                options: ["It increases by one", "It stays the same", "It decreases by one", "It is halved"],
+                answer: 2
+            },
+            {
+                q: "How is Insertion Sort similar to Selection Sort?",
+                options: [
+                    "Both algorithms divide the list into sorted and unsorted parts",
+                    "Both algorithms swap elements multiple times",
+                    "Both algorithms sort them individually",
+                    "Both algorithms use a divide-and-conquer approach"
+                ],
+                answer: 0
+            },
+            {
+                q: "Which sorting technique is best suited if elements are already sorted?",
+                options: ["Bubble sort", "Selection sort", "Insertion sort", "Quick sort"],
+                answer: 2
+            },
+            {
+                q: "What does the time complexity of an algorithm represent?",
+                options: [
+                    "The total memory required by the algorithm",
+                    "The amount of time an algorithm takes to process a given data",
+                    "The number of lines of code in an algorithm",
+                    "The number of iterations in a loop"
+                ],
+                answer: 1
+            },
+            {
+                q: "The amount of time an algorithm takes to process a given data is called",
+                options: ["time complexity", "loop complexity", "if complexity", "watch complexity"],
+                answer: 0
+            },
+            {
+                q: "Which of the following type of algorithms is characterized by a constant execution time, regardless of the size of the input data?",
+                options: [
+                    "Linear time algorithms",
+                    "Exponential time algorithms",
+                    "Constant time algorithms",
+                    "Quadratic time algorithms"
+                ],
+                answer: 2
+            },
+            {
+                q: "What kind of algorithms have a time complexity of O(n)?",
+                options: [
+                    "Constant time algorithms",
+                    "Linear time algorithms",
+                    "Logarithmic time algorithms",
+                    "Quadratic time algorithms"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which of the following describes the behavior of linear time algorithms?",
+                options: [
+                    "The algorithm's execution time increases exponentially with input size",
+                    "The algorithm's execution time increases logarithmically with input size",
+                    "The algorithm's execution time increases directly in proportion to input size",
+                    "The algorithm's execution time does not depend on the input size"
+                ],
+                answer: 2
+            },
+            {
+                q: "The term is used to describe algorithms whose time complexity is n², typically caused by nested loops",
+                options: [
+                    "Linear time algorithms",
+                    "Exponential time algorithms",
+                    "Quadratic time algorithms",
+                    "Constant time algorithms"
+                ],
+                answer: 2
+            },
+            {
+                q: "Which of the following is an example of a quadratic time complexity algorithm?",
+                options: [
+                    "A single loop iterating over n elements",
+                    "A loop with n iterations and another loop with n iterations inside it",
+                    "A recursive algorithm halving the problem size each time",
+                    "A linear search algorithm"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which of the following examples represent the worst case input for an insertion sort?",
+                options: [
+                    "array in sorted order",
+                    "array sorted in reverse order",
+                    "normal unsorted array",
+                    "large array"
+                ],
+                answer: 1
+            },
+            {
+                q: "A computational complexity that describes the amount of time an algorithm takes to run as a function of the size of its input.",
+                options: ["Time Complexity", "Data Complexity", "Clock Complexity", "Loop Complexity"],
+                answer: 0
+            },
+            {
+                q: "Assertion (A): Sorting a large number of items can take a substantial amount of time.\nReason (R): The extra time of sorting is worth it when compared to the time needed to search in an unsorted list",
+                options: [
+                    "Both A and R are true",
+                    "Both A and R are false",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion (A): Bubble sort compares adjacent elements in each pass and swaps them if they are not in order.\nReason (R): The largest unsorted element 'bubbles up' to its correct position at the end of the list.",
+                options: [
+                    "Both A and R are true",
+                    "Both A and R are false",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion (A): In Bubble sort, the total number of passes required to sort a list with n elements is n\nReason (R): In each pass, the smallest element is placed at its correct position in the list.",
+                options: [
+                    "Both A and R are true",
+                    "Both A and R are false",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion (A): In Bubble Sort, the size of the unsorted portion of the list decreases with each pass.\nReason (R): After each pass, the largest unsorted element is placed at the end of the list, making it sorted.",
+                options: [
+                    "Both A and R are true",
+                    "Both A and R are false",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion (A): Selection sort makes (n - 1) passes through a list of n elements to sort the list.\nReason (R): In selection sort, the list is divided into two parts: a sorted left list and an unsorted right list.",
+                options: [
+                    "Both A and R are true",
+                    "Both A and R are false",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion (A): In selection sort, the number of passes required to sort a list of n elements is (n-1).\nReason (R): In each pass, selection sort places the smallest (or largest) element from the unsorted part of the list to the beginning of the unsorted section.",
+                options: [
+                    "Both A and R are true",
+                    "Both A and R are false",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion (A): In selection sort, the sorted and unsorted parts of the list are clearly separated during the sorting process.\nReason (R): The selection sort repeatedly compares adjacent elements and swaps them if they are in the wrong order.",
+                options: [
+                    "Both A and R are true",
+                    "Both A and R are false",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 2
+            },
+            {
+                q: "Assertion (A): Selection sort is an in-place sorting algorithm.\nReason (R): It does not require any extra memory space other than the input array.",
+                options: [
+                    "Both A and R are false",
+                    "A is true, but R is false",
+                    "A is false, but R is true",
+                    "Both A and R are true"
+                ],
+                answer: 3
+            },
+            {
+                q: "Assertion (A): In Selection Sort, the smallest element is found & placed at the beginning in each pass.\nReason (R): In each pass of Selection Sort, all elements of the unsorted list are compared to find the minimum value.",
+                options: [
+                    "Both A and R are false",
+                    "Both A and R are true",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion (A): In selection sort the smallest element is selected in each pass and placed in its correct position.\nAssertion (B): In selection sort the nth element is the last, and it is already in place",
+                options: [
+                    "A is true and B is false",
+                    "A is false and B is true",
+                    "A and B are true",
+                    "A and B are false"
+                ],
+                answer: 2
+            },
+            {
+                q: "Assertion (A): Insertion sort divides the list into a sorted and an unsorted part.\nReason (R): Each element from the unsorted part is inserted into its correct position in the sorted part by traversing the sorted part backward.",
+                options: [
+                    "A is false, but R is true",
+                    "Both A and R are false",
+                    "A is true, but R is false",
+                    "Both A and R are true"
+                ],
+                answer: 3
+            },
+            {
+                q: "Assertion (A): In insertion sort, in each pass, the sorted list is traversed from the backward direction.\nReason (R): This is done to find the correct position to insert the current element from the unsorted list.",
+                options: [
+                    "Both A and R are false",
+                    "A is true, but R is false",
+                    "A is false, but R is true",
+                    "Both A and R are true"
+                ],
+                answer: 3
+            },
+            {
+                q: "Assertion (A): In insertion sort, the first pass starts with an empty sorted list.\nReason (R): The sorted list initially contains the smallest element from the entire list.",
+                options: [
+                    "Both A and R are false",
+                    "A is true, but R is false",
+                    "A is false, but R is true",
+                    "Both A and R are true"
+                ],
+                answer: 1
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let timerInterval;
+        let timeRemaining = 30 * 60;
+        let startTime;
+
+        function initializeTest() {
+            startTime = Date.now();
+            renderQuestions();
+            updateProgress();
+            startTimer();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                if (index === 0) questionDiv.classList.add('active');
+
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1} of ${questions.length}</span>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                    <ul class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <li class="option" onclick="selectAnswer(${index}, ${optIndex})" data-index="${optIndex}">
+                                ${String.fromCharCode(97 + optIndex)}) ${option}
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectAnswer(questionIndex, optionIndex) {
+            userAnswers[questionIndex] = optionIndex;
+            
+            const questionDiv = document.querySelectorAll('.question-container')[questionIndex];
+            const options = questionDiv.querySelectorAll('.option');
+            
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[optionIndex].classList.add('selected');
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null).length;
+            const percentage = (answered / questions.length) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');
+                currentQuestionIndex++;
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');
+                updateNavigationButtons();
+                updateQuestionCounter();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');
+                currentQuestionIndex--;
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');
+                updateNavigationButtons();
+                updateQuestionCounter();
+            }
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+        }
+
+        function updateQuestionCounter() {
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                
+                const timerDisplay = document.getElementById('timer');
+                timerDisplay.textContent = `⏱️ ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeRemaining <= 300) {
+                    timerDisplay.classList.add('warning');
+                }
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            
+            let correct = 0;
+            let wrong = 0;
+            
+            userAnswers.forEach((answer, index) => {
+                if (answer === questions[index].answer) {
+                    correct++;
+                } else if (answer !== null) {
+                    wrong++;
+                }
+            });
+            
+            const percentage = Math.round((correct / questions.length) * 100);
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            
+            document.getElementById('questionsContainer').style.display = 'none';
+            document.querySelector('.navigation').style.display = 'none';
+            
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.classList.add('active');
+            
+            document.getElementById('scorePercentage').textContent = percentage + '%';
+            document.getElementById('correctAnswers').textContent = correct;
+            document.getElementById('wrongAnswers').textContent = wrong;
+            document.getElementById('timeTaken').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            const scoreCircle = document.getElementById('scoreCircle');
+            if (percentage >= 90) scoreCircle.className = 'score-circle excellent';
+            else if (percentage >= 70) scoreCircle.className = 'score-circle good';
+            else if (percentage >= 50) scoreCircle.className = 'score-circle average';
+            else scoreCircle.className = 'score-circle poor';
+        }
+
+        function showReview() {
+            const reviewSection = document.getElementById('reviewSection');
+            reviewSection.style.display = 'block';
+            reviewSection.innerHTML = '<h2 style="margin-bottom: 20px;">📝 Detailed Answer Review</h2>';
+            
+            questions.forEach((q, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === q.answer;
+                
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = `review-question ${isCorrect ? 'correct' : 'wrong'}`;
+                
+                reviewDiv.innerHTML = `
+                    <h4>Question ${index + 1}: ${isCorrect ? '✅ Correct' : '❌ Wrong'}</h4>
+                    <p><strong>${q.q}</strong></p>
+                    <p style="margin-top: 10px;">
+                        <strong>Your Answer:</strong> ${userAnswer !== null ? q.options[userAnswer] : 'Not Answered'}<br>
+                        <strong>Correct Answer:</strong> ${q.options[q.answer]}
+                    </p>
+                `;
+                
+                reviewSection.appendChild(reviewDiv);
+            });
+            
+            document.getElementById('resultContainer').style.display = 'none';
+        }
+
+        function restartTest() {
+            location.reload();
+        }
+
+        window.onload = initializeTest;
+    </script>
+</body>
+</html>

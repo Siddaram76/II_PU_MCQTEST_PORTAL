@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Networks - MCQ Test | Class XII Computer Science</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px;}
+.container{max-width:900px;margin:0 auto;background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);overflow:hidden;}
+.header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:30px;text-align:center;}
+.header h1{font-size:28px;margin-bottom:10px;}
+.header p{font-size:16px;opacity:0.9;}
+.timer-section{background:#f8f9fa;padding:20px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #e9ecef;}
+.timer{font-size:24px;font-weight:bold;color:#667eea;}
+.timer.warning{color:#e74c3c;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+.progress-bar{flex:1;margin:0 30px;height:8px;background:#e9ecef;border-radius:10px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#667eea 0%,#764ba2 100%);width:0%;transition:width 0.3s ease;}
+.question-container{padding:30px;display:none;}
+.question-container.active{display:block;}
+.question-header{display:flex;justify-content:space-between;margin-bottom:20px;padding-bottom:15px;border-bottom:2px solid #e9ecef;}
+.question-number{font-size:14px;color:#6c757d;font-weight:600;}
+.question-text{font-size:18px;color:#2c3e50;margin-bottom:25px;line-height:1.6;}
+.options{list-style:none;}
+.option{background:#f8f9fa;margin-bottom:12px;padding:15px 20px;border-radius:10px;cursor:pointer;transition:all 0.3s ease;border:2px solid transparent;}
+.option:hover{background:#e9ecef;transform:translateX(5px);}
+.option.selected{background:#667eea;color:white;border-color:#667eea;}
+.option.correct{background:#28a745;color:white;border-color:#28a745;}
+.option.wrong{background:#dc3545;color:white;border-color:#dc3545;}
+.navigation{display:flex;justify-content:space-between;padding:20px 30px;background:#f8f9fa;border-top:2px solid #e9ecef;}
+.btn{padding:12px 30px;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;}
+.btn-primary{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(102,126,234,0.4);}
+.btn-secondary{background:#6c757d;color:white;}
+.btn-secondary:hover{background:#5a6268;}
+.btn:disabled{opacity:0.5;cursor:not-allowed;}
+.result-container{display:none;padding:40px;text-align:center;}
+.result-container.active{display:block;}
+.score-circle{width:200px;height:200px;border-radius:50%;margin:0 auto 30px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:48px;font-weight:bold;color:white;}
+.score-circle.excellent{background:linear-gradient(135deg,#28a745 0%,#20c997 100%);}
+.score-circle.good{background:linear-gradient(135deg,#17a2b8 0%,#3498db 100%);}
+.score-circle.average{background:linear-gradient(135deg,#ffc107 0%,#ff9800 100%);}
+.score-circle.poor{background:linear-gradient(135deg,#dc3545 0%,#c82333 100%);}
+.result-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin:30px 0;}
+.stat-card{background:#f8f9fa;padding:20px;border-radius:10px;border-left:4px solid #667eea;}
+.stat-label{font-size:14px;color:#6c757d;margin-bottom:5px;}
+.stat-value{font-size:24px;font-weight:bold;color:#2c3e50;}
+.review-section{margin-top:30px;text-align:left;}
+.review-question{background:#f8f9fa;padding:20px;border-radius:10px;margin-bottom:15px;}
+.review-question.correct{border-left:4px solid #28a745;}
+.review-question.wrong{border-left:4px solid #dc3545;}
+@media(max-width:768px){.container{margin:10px;}.header h1{font-size:22px;}.timer-section{flex-direction:column;gap:15px;}.progress-bar{margin:0;width:100%;}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header"><h1>🌐 Computer Networks</h1><p>Class XII Computer Science - MCQ Test</p></div>
+<div class="timer-section">
+<div class="timer" id="timer">⏱️ 60:00</div>
+<div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+<div class="question-number"><span id="currentQuestion">1</span> / <span id="totalQuestions">80</span></div>
+</div>
+<div id="questionsContainer"></div>
+<div class="navigation">
+<button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()">← Previous</button>
+<button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+<button class="btn btn-primary" id="submitBtn" onclick="submitTest()" style="display:none;">Submit Test</button>
+</div>
+<div class="result-container" id="resultContainer">
+<h2>Test Completed! 🎉</h2>
+<div class="score-circle" id="scoreCircle"><div><div id="scorePercentage">0%</div><div style="font-size:16px;margin-top:10px;">Score</div></div></div>
+<div class="result-stats">
+<div class="stat-card"><div class="stat-label">Total Questions</div><div class="stat-value" id="totalQuestionsResult">80</div></div>
+<div class="stat-card"><div class="stat-label">Correct Answers</div><div class="stat-value" id="correctAnswers">0</div></div>
+<div class="stat-card"><div class="stat-label">Wrong Answers</div><div class="stat-value" id="wrongAnswers">0</div></div>
+<div class="stat-card"><div class="stat-label">Time Taken</div><div class="stat-value" id="timeTaken">0:00</div></div>
+</div>
+<button class="btn btn-primary" onclick="showReview()">View Detailed Review</button>
+<button class="btn btn-secondary" onclick="restartTest()" style="margin-left:10px;">Retake Test</button>
+</div>
+<div class="review-section" id="reviewSection" style="display:none;"></div>
+</div>
+<script>
+const questions=[
+{q:"Which of the following describes a computer network?",options:["A system used to broadcast data","A system for printing documents","An interconnection between two or more computers or computing devices","A system for receiving data packets"],answer:2},
+{q:"Which of the following best defines a Local Area Network?",options:["A network that connects devices across countries or continents","A network that connects devices within a limited geographical area such as a room, building, or campus","A global collection of interlinked web pages","A wireless network only for mobile phones"],answer:1},
+{q:"The IEEE assigned number for wireless LAN is",options:["IEEE 802.3","IEEE 802.5","IEEE 802.15","IEEE 802.11"],answer:3},
+{q:"Which media/technology is commonly used for LAN connectivity?",options:["Satellite links","Ethernet cables and Wi-Fi","Undersea fiber-optic trunk lines","Cellular 4G/5G towers"],answer:1},
+{q:"The protocol introduced as standard protocol on ARPANET is",options:["TCP/IP","HTTP","FTP","PPP"],answer:0},
+{q:"What is the typical maximum range a LAN can be extended to, as mentioned in the passage?",options:["10 metres","100 metres","1 kilometre","100 kilometres"],answer:2},
+{q:"The network connects devices like laptops, smartphones, printers, smartphones, mobile phones of individuals is",options:["LAN","PAN","WAN","MAN"],answer:1},
+{q:"Which of the following networks connects devices within a limited distance?",options:["PAN","MAN","WAN","LAN"],answer:0},
+{q:"The network which offers high data transfer rates from 10 Mbps to 1000 Mbps is",options:["WAN","PAN","LAN","MAN"],answer:2},
+{q:"The network covers a larger geographical area like a city or town.",options:["WAN","LAN","PAN","MAN"],answer:3},
+{q:"Which of the following is an example of a Metropolitan Area Network?",options:["A home Wi-Fi setup","A university campus network","A city-wide cable TV network","A Bluetooth connection between devices"],answer:2},
+{q:"The network connects computers and other networks across countries or continents is",options:["LAN","PAN","MAN","WAN"],answer:3},
+{q:"The device converts analog signals to digital bits and vice versa is",options:["Switch","Modem","Router","NIC"],answer:1},
+{q:"Which of the following data rate ranges corresponds to LAN speeds",options:["56 kbps to 128 kbps","10 Mbps to 1000 Mbps","10 Gbps to 100 Gbps","1 bps to 100 bps"],answer:1},
+{q:"The modulator converts:",options:["Digital signals to analog","Analog signals to digital","Binary to hexadecimal","analog signals to optical signals"],answer:0},
+{q:"The function of the demodulator is",options:["Converting Digital signals to analog","Converting binary signals to analog signals","Converting Analog signals to digital","Sending control signals"],answer:2},
+{q:"Another name for an Ethernet card is",options:["IDE","NIC","FireWire","COM1"],answer:1},
+{q:"Which device is a network adapter used to set up a wired network?",options:["Modem","Wi-Fi","Bluetooth","NIC"],answer:3},
+{q:"Which device acts as an interface between a computer and the network?",options:["Switch","Hub","NIC","Repeater"],answer:2},
+{q:"The data rate of Gigabit ethernet is",options:["2048 Mbps","1000 Mbps","512 Mbps","4096 Mbps"],answer:1},
+{q:"The network circuit mounted on the motherboard of a computer is",options:["NIC","Router","Graphics Processing Unit","Switch"],answer:0},
+{q:"Which cable connects the computer to the network through NIC?",options:["USB cable","HDMI cable","Ethernet cable","VGA cable"],answer:2},
+{q:"Which device is an eight-pin connector used exclusively with Ethernet cables for networking?",options:["RJ-45","USB","HDMI","VGA"],answer:0},
+{q:"Which device is the standard networking interface seen at the end of all network cables?",options:["RJ-11","RJ-45","DB-25","PS/2"],answer:1},
+{q:"How many pins does an RJ-45 connector have?",options:["24","32","8","16"],answer:2},
+{q:"Which device is an analog device that works with signals on the cables to which it is connected?",options:["Router","Hub","Repeater","Switch"],answer:2},
+{q:"Which device regenerates signals on the cables to which it is connected?",options:["Repeater","Modem","NIC","Gateway"],answer:0},
+{q:"Which device is used to connect different devices through wires in a network?",options:["Repeater","Hub","Router","Modem"],answer:1},
+{q:"Which device connects multiple computers or communicating devices in a network?",options:["Hub","NIC","RJ-45","Repeater"],answer:0},
+{q:"Which device receives data, analyzes it, and transmits it to other networks?",options:["Switch","Router","Hub","Repeater"],answer:1},
+{q:"The device can analyze data, decide how it is packaged, and send it to another network is the",options:["Hub","Switch","Router","Repeater"],answer:2},
+{q:"The device serves as the entry and exit point of a network is the",options:["Gateway","Switch","Hub","NIC"],answer:0},
+{q:"Which device maintains information about internal and remote network paths?",options:["Gateway","Router","Repeater","Modem"],answer:1},
+{q:"Which of the following refers to the arrangement of computers and peripherals in a network?",options:["Protocol","Topology","Interface","Adapter"],answer:1},
+{q:"In which topology is each device connected to every other device in the network?",options:["Ring","Mesh","Star","Bus"],answer:1},
+{q:"In which topology is each node connected to two other devices, one on each side?",options:["Star","Ring","Mesh","Tree"],answer:1},
+{q:"The link in a ring topology is:",options:["Unidirectional","Always wireless","Only analog","Irregular"],answer:0},
+{q:"In which topology does each device connect to a transmission medium?",options:["Star","Bus","Ring","Mesh"],answer:1},
+{q:"In which topology is each device connected to a central node?",options:["Ring","Star","Bus","Mesh"],answer:1},
+{q:"In which topology are there multiple branches, each with one or more basic topologies?",options:["Mesh","Hybrid","Ring","Bus"],answer:1},
+{q:"Which of the following is a hierarchical topology?",options:["Tree","Ring","Bus","Mesh"],answer:0},
+{q:"Which of the following is a hybrid topology?",options:["Star","Tree","Mesh","Star-Bus"],answer:3},
+{q:"Which of the following is a unique value associated with a NIC",options:["IP address","MAC address","Port number","Subnet mask"],answer:1},
+{q:"The value is engraved on a NIC at the time of manufacturing and cannot be changed is the",options:["IP address","MAC address","Port number","Subnet mask"],answer:1},
+{q:"Which address uniquely identifies each node in a network?",options:["MAC address","Gateway address","DNS address","Port number"],answer:0},
+{q:"How many hexadecimal digits are used in a MAC address?",options:["8","10","12","16"],answer:2},
+{q:"How many bits are used in an IPv4 address?",options:["32","64","128","16"],answer:0},
+{q:"How many bits are used in an IPv6 address?",options:["32","64","128","256"],answer:2},
+{q:"Which of the following is an ocean of information stored in trillions of interlinked web pages?",options:["Local Area Network","World Wide Web","Intranet","File Server"],answer:1},
+{q:"Which of the following is used to design standardized web pages readable across devices?",options:["MAC","HTML","URL","DNS"],answer:1},
+{q:"Which of the following is a unique address or path for each web resource?",options:["MAC","HTML","URL","ISP"],answer:2},
+{q:"Which protocol is used to retrieve linked web pages across the web?",options:["HTTP","FTP","SMTP","TCP"],answer:0},
+{q:"What is the full form of MAC?",options:["Media Access Control","Machine Address Code","Manual Access Configuration","Multi Access Channel"],answer:0},
+{q:"What is the full form of HTML?",options:["Hyper Test Markup Language","High Tech Markup Language","Hyper Text Markup Language","Hyperlink Transfer Markup Language"],answer:2},
+{q:"What is the full form of URL?",options:["Uniform Resource Locator","Universal Reference Link","Unified Retrieval Language","Unique Routing Locator"],answer:0},
+{q:"What is the full form of URI?",options:["Uniform Resource Identifier","Universal Resource Interface","Unique Reference Identifier","Unified Resource Index"],answer:0},
+{q:"What is the full form of WWW?",options:["World Wide Web","Wide World Web","Web Wide World","World Web Wide"],answer:0},
+{q:"What is the full form of DNS?",options:["Domain Navigation Server","Domain Name Server","Digital Naming structure","Distributed Name Service"],answer:1},
+{q:"What is the full form of ISP?",options:["Internet Server Protocol","Integrated Signal Processor","Internet Sharing Platform","Internet Service Provider"],answer:3},
+{q:"What is the full form of IP?",options:["Internet Protocol","Internal Path","Integrated Port","Interlinked Packet"],answer:0},
+{q:"What is the full form of OUI?",options:["Organizationally Unique Identifier","Online User Interface","Open Universal Identifier","Operational Unit Index"],answer:0},
+{q:"Which of the following best describes a WPAN?",options:["A network that connects devices across a city using fiber optics","A network connecting personal devices within about 10 meters using technologies like Bluetooth or Wi-Fi Direct","A global network of interlinked web pages accessed via browsers","A wired network connecting computers in an office using Ethernet cables"],answer:1},
+{q:"Why is a LAN considered comparatively secure?",options:["It always uses fibre optics","Only authentic users within the network can access other computers or shared resources","Because it never connects to the internet","Because it uses abstract encryption methods"],answer:1},
+{q:"Which of these is a common advantage of using a LAN in an office or campus?",options:["Unlimited geographic coverage","Very low data transfer rates","Ability for users to share printers and upload/download files from a local server","Requirement for manual packet switching for each message"],answer:2},
+{q:"Ethernet is best defined as:",options:["A type of modem used for long-distance links","A set of rules that defines how devices connect with each other through cables in a LAN","A wireless protocol for PANs","A browser for accessing the World Wide Web"],answer:1},
+{q:"Which of the following is a typical data rate range for LAN",options:["0.5 Mbps to 2 Mbps","10 Mbps to 1000 Mbps","10 Gbps to 100 Gbps","1000 bps to 10 kbps"],answer:1},
+{q:"Which of the following best describes a Wide Area Network (WAN)?",options:["A network that connects devices within a single room or building","A network that connects LANs and MANs across different geographical locations, possibly across countries or continents","A personal network connecting devices within 10 metres","A network used only for cable TV distribution"],answer:1},
+{q:"Which of the following is the largest example of a WAN?",options:["A university campus network","A home Wi-Fi network","The Internet","A Bluetooth connection between two phones"],answer:2},
+{q:"Which statement is true about how a WAN can be formed?",options:["By connecting only wireless PANs together","By connecting a LAN to other LANs via wired or wireless media","By connecting devices using only USB cables","By connecting two devices using an RJ-45 cable only"],answer:1},
+{q:"Which organizations commonly use WANs to connect branches across different locations?",options:["Small home users only","Large businesses, educational institutions, and government organisations","Single-room offices with one computer","Devices connected by Bluetooth"],answer:1},
+{q:"Which of the following is a typical purpose of a WAN?",options:["To provide short-range high-speed sharing of a printer within a lab","To connect different branches of an organization in different cities or countries","To create a direct wired link between a phone and a laptop","To replace LANs in local classrooms"],answer:1},
+{q:"A company wants to connect its office in Delhi with its branch in Shimla and another branch overseas. Which network type is most appropriate?",options:["PAN","LAN","MAN","WAN"],answer:3},
+{q:"Which phrase correctly describes the relationship between the Internet and WANs?",options:["The Internet is unrelated to WANs","The Internet is the largest WAN connecting billions of devices and millions of LANs worldwide","The Internet is a PAN scaled down for homes","The Internet only connects devices within a campus"],answer:1},
+{q:"Which of the following correctly describes an IP address?",options:["A permanent hardware address burned into a network card","A unique numeric address used to identify a node on an IP network","A protocol for wireless communication","A web page address"],answer:1},
+{q:"An IPv4 address is written as four decimal numbers separated by periods because it is a:",options:["16-bit address","64-bit address","32-bit address","128-bit address"],answer:2},
+{q:"Which of the following is a sample IPv4 address format?",options:["2001:CDBA:0000:0000:0000:0000:3257:9652","192.168.0.178","10.0.0.0/8","256.300.1.1"],answer:1},
+{q:"Why was IPv6 introduced?",options:["To replace Ethernet standards","To provide a larger address space because IPv4's 32 bits were insufficient","To reduce MAC address length","To convert decimal addresses into binary automatically"],answer:1},
+{q:"The network topology where data can be transmitted in only one direction is",options:["Star","Ring","Mesh","Bus"],answer:1},
+{q:"Correct expansion form of HTTP is:",options:["Hyperlink Text Transmit Protocol","Hyper Transfer Transmission Protocol","Hyper Text Transfer Protocol","Hypermedia Transmit Text Protocol"],answer:2},
+{q:"Conversion of the domain name of each web server to its corresponding IP address is",options:["Network","Domain Name System","URI","Domain Name Resolution"],answer:3},
+{q:"Printing of documents within a building, can be done by using which type of network?",options:["MAN","WAN","LAN","PAN"],answer:2},
+{q:"The device used for conversion between digital and analogue signal is",options:["Modem","Repeater","Router","Switch"],answer:0},
+{q:"The approximate range of personal area networks is",options:["14 meters","5 meters","10 meters","20 meters"],answer:2}
+];
+let currentQuestionIndex=0;let userAnswers=new Array(questions.length).fill(null);let timerInterval;let timeRemaining=60*60;let startTime;
+function initializeTest(){startTime=Date.now();renderQuestions();updateProgress();startTimer();}
+function renderQuestions(){const container=document.getElementById('questionsContainer');container.innerHTML='';questions.forEach((q,index)=>{const questionDiv=document.createElement('div');questionDiv.className='question-container';if(index===0)questionDiv.classList.add('active');questionDiv.innerHTML=`<div class="question-header"><span class="question-number">Question ${index+1} of ${questions.length}</span></div><div class="question-text">${q.q}</div><ul class="options">${q.options.map((option,optIndex)=>`<li class="option" onclick="selectAnswer(${index},${optIndex})" data-index="${optIndex}">${String.fromCharCode(97+optIndex)}) ${option}</li>`).join('')}</ul>`;container.appendChild(questionDiv);});}
+function selectAnswer(questionIndex,optionIndex){userAnswers[questionIndex]=optionIndex;const questionDiv=document.querySelectorAll('.question-container')[questionIndex];const options=questionDiv.querySelectorAll('.option');options.forEach(opt=>opt.classList.remove('selected'));options[optionIndex].classList.add('selected');updateProgress();}
+function updateProgress(){const answered=userAnswers.filter(a=>a!==null).length;const percentage=(answered/questions.length)*100;document.getElementById('progressBar').style.width=percentage+'%';}
+function nextQuestion(){if(currentQuestionIndex<questions.length-1){document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');currentQuestionIndex++;document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');updateNavigationButtons();updateQuestionCounter();}}
+function previousQuestion(){if(currentQuestionIndex>0){document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');currentQuestionIndex--;document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');updateNavigationButtons();updateQuestionCounter();}}
+function updateNavigationButtons(){document.getElementById('prevBtn').disabled=currentQuestionIndex===0;if(currentQuestionIndex===questions.length-1){document.getElementById('nextBtn').style.display='none';document.getElementById('submitBtn').style.display='block';}else{document.getElementById('nextBtn').style.display='block';document.getElementById('submitBtn').style.display='none';}}
+function updateQuestionCounter(){document.getElementById('currentQuestion').textContent=currentQuestionIndex+1;}
+function startTimer(){timerInterval=setInterval(()=>{timeRemaining--;const minutes=Math.floor(timeRemaining/60);const seconds=timeRemaining%60;const timerDisplay=document.getElementById('timer');timerDisplay.textContent=`⏱️ ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;if(timeRemaining<=300){timerDisplay.classList.add('warning');}if(timeRemaining<=0){clearInterval(timerInterval);submitTest();}},1000);}
+function submitTest(){clearInterval(timerInterval);let correct=0;let wrong=0;userAnswers.forEach((answer,index)=>{if(answer===questions[index].answer){correct++;}else if(answer!==null){wrong++;}});const percentage=Math.round((correct/questions.length)*100);const timeTaken=Math.floor((Date.now()-startTime)/1000);const minutes=Math.floor(timeTaken/60);const seconds=timeTaken%60;document.getElementById('questionsContainer').style.display='none';document.querySelector('.navigation').style.display='none';const resultContainer=document.getElementById('resultContainer');resultContainer.classList.add('active');document.getElementById('scorePercentage').textContent=percentage+'%';document.getElementById('correctAnswers').textContent=correct;document.getElementById('wrongAnswers').textContent=wrong;document.getElementById('timeTaken').textContent=`${minutes}:${seconds.toString().padStart(2,'0')}`;const scoreCircle=document.getElementById('scoreCircle');if(percentage>=90)scoreCircle.className='score-circle excellent';else if(percentage>=70)scoreCircle.className='score-circle good';else if(percentage>=50)scoreCircle.className='score-circle average';else scoreCircle.className='score-circle poor';}
+function showReview(){const reviewSection=document.getElementById('reviewSection');reviewSection.style.display='block';reviewSection.innerHTML='<h2 style="margin-bottom:20px;">📝 Detailed Answer Review</h2>';questions.forEach((q,index)=>{const userAnswer=userAnswers[index];const isCorrect=userAnswer===q.answer;const reviewDiv=document.createElement('div');reviewDiv.className=`review-question ${isCorrect?'correct':'wrong'}`;reviewDiv.innerHTML=`<h4>Question ${index+1}: ${isCorrect?'✅ Correct':'❌ Wrong'}</h4><p><strong>${q.q}</strong></p><p style="margin-top:10px;"><strong>Your Answer:</strong> ${userAnswer!==null?q.options[userAnswer]:'Not Answered'}<br><strong>Correct Answer:</strong> ${q.options[q.answer]}</p>`;reviewSection.appendChild(reviewDiv);});document.getElementById('resultContainer').style.display='none';}
+function restartTest(){location.reload();}
+window.onload=initializeTest;
+</script>
+</body>
+</html>

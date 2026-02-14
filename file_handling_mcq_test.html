@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Handling - MCQ Test | Class XII Computer Science</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .timer-section {
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .timer.warning {
+            color: #e74c3c;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .progress-bar {
+            flex: 1;
+            margin: 0 30px;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            padding: 30px;
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .question-number {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            background: #f8f9fa;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .option.wrong {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-container {
+            display: none;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .score-circle.excellent {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .score-circle.good {
+            background: linear-gradient(135deg, #17a2b8 0%, #3498db 100%);
+        }
+
+        .score-circle.average {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        }
+
+        .score-circle.poor {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .review-section {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .review-question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .review-question.correct {
+            border-left: 4px solid #28a745;
+        }
+
+        .review-question.wrong {
+            border-left: 4px solid #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .timer-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .progress-bar {
+                margin: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📁 File Handling in Python</h1>
+            <p>Class XII Computer Science - MCQ Test</p>
+        </div>
+
+        <div class="timer-section">
+            <div class="timer" id="timer">⏱️ 45:00</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="question-number">
+                <span id="currentQuestion">1</span> / <span id="totalQuestions">55</span>
+            </div>
+        </div>
+
+        <div id="questionsContainer"></div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()">← Previous</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitTest()" style="display: none;">Submit Test</button>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <h2>Test Completed! 🎉</h2>
+            <div class="score-circle" id="scoreCircle">
+                <div>
+                    <div id="scorePercentage">0%</div>
+                    <div style="font-size: 16px; margin-top: 10px;">Score</div>
+                </div>
+            </div>
+            <div class="result-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Questions</div>
+                    <div class="stat-value" id="totalQuestionsResult">55</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Correct Answers</div>
+                    <div class="stat-value" id="correctAnswers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Wrong Answers</div>
+                    <div class="stat-value" id="wrongAnswers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Time Taken</div>
+                    <div class="stat-value" id="timeTaken">0:00</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="showReview()">View Detailed Review</button>
+            <button class="btn btn-secondary" onclick="restartTest()" style="margin-left: 10px;">Retake Test</button>
+        </div>
+
+        <div class="review-section" id="reviewSection" style="display: none;"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "The files are stored permanently in a computer system on",
+                options: ["Random Access Memory", "Cache Memory", "CPU", "Secondary storage media"],
+                answer: 3
+            },
+            {
+                q: "Which of the following file extensions is used for plain text files?",
+                options: [".exe", ".txt", ".jpg", ".mp3"],
+                answer: 1
+            },
+            {
+                q: "The following device is used to store data permanently entered in Python program",
+                options: ["Primary storage", "Non-volatile Memory", "Temporary storage", "Secondary storage devices"],
+                answer: 3
+            },
+            {
+                q: "Which of the following is data file?",
+                options: ["computer file", "meta file", "image file", "text file and binary file"],
+                answer: 3
+            },
+            {
+                q: "Computers store every file as a collection of",
+                options: ["0's and 1's", "0's and 2's", "0's and 9's", "ASCII"],
+                answer: 0
+            },
+            {
+                q: "Each line of a text file is terminated by a special character",
+                options: ["EOS", "EOP", "EOF", "EOL"],
+                answer: 3
+            },
+            {
+                q: "Document created in notepad is an example of",
+                options: ["Text file", "Binary file", "Word file", "system file"],
+                answer: 0
+            },
+            {
+                q: "The default EOL character in Python is",
+                options: ["\\k", "\\v", "\\b", "\\n"],
+                answer: 3
+            },
+            {
+                q: "What is the primary purpose of file handling in Python?",
+                options: [
+                    "To process data faster",
+                    "To store data temporarily",
+                    "To permanently store data and output for reuse",
+                    "To display output on the screen"
+                ],
+                answer: 2
+            },
+            {
+                q: "The following file can be understood as a sequence of characters consisting of alphabets, numbers and other special symbols.",
+                options: ["Text file", "binary file", "numeric file", "alphabets file"],
+                answer: 0
+            },
+            {
+                q: "What happens if you try to open a binary file in a text editor?",
+                options: [
+                    "The text editor will display the file's content in ASCII format",
+                    "The text editor will show the file as a series of 0s and 1s",
+                    "The text editor will display garbage values",
+                    "The text editor will read the file successfully if it is an image"
+                ],
+                answer: 2
+            },
+            {
+                q: "Which of the following is the correct syntax to open a file in Python?",
+                options: [
+                    'fobj=open("filename", accessmode) :',
+                    'fileobj = open(filename, accessmode)',
+                    'open=file("file.txt", "accessmode")',
+                    'file.open("filename")'
+                ],
+                answer: 1
+            },
+            {
+                q: "What type of software is required to view or modify the contents of a binary file?",
+                options: [
+                    "Text editor",
+                    "Any word processor",
+                    "Spread sheet application",
+                    "Specific software designed for handling binary files"
+                ],
+                answer: 3
+            },
+            {
+                q: "Binary files are also stored in terms of",
+                options: ["0's and 1's", "0's and 2's", "0's and 9's", "ASCII"],
+                answer: 0
+            },
+            {
+                q: "Which function in Python is used to open a file for writing data?",
+                options: ["file.open()", "open()", "openfile()", "write()"],
+                answer: 1
+            },
+            {
+                q: "How are binary files stored in a computer?",
+                options: [
+                    "As sequences of words",
+                    "As sequences of bytes",
+                    "As sequences of characters",
+                    "As a sequence of symbols"
+                ],
+                answer: 1
+            },
+            {
+                q: "What does the <file>.mode attribute return in Python?",
+                options: [
+                    "The name of the file",
+                    "The current file pointer position",
+                    "The access mode in which the file was opened",
+                    "The contents of the file"
+                ],
+                answer: 2
+            },
+            {
+                q: "Which of the following access modes opens a file for reading only?",
+                options: ["r", "w", "r+", "a"],
+                answer: 0
+            },
+            {
+                q: "Which mode is used to Opens the file in read-only mode in python?",
+                options: ["<r+>", "<w>", "<a>", "<r>"],
+                answer: 3
+            },
+            {
+                q: "Which mode is used to Opens the file in binary and read-only mode?",
+                options: ["<rb>", "<wb>", "<ab>", "<rb+>"],
+                answer: 0
+            },
+            {
+                q: "Which of the following modes allows you to open a file for both reading and writing?",
+                options: ["<r+>", "<a+>", "<wb+>", "<a+>"],
+                answer: 0
+            },
+            {
+                q: "In Python, what happens when the file you are trying to open in write mode ('w') does not exist?",
+                options: [
+                    "An error is thrown",
+                    "A new empty file is created",
+                    "A new empty file is not created",
+                    "Nothing happens"
+                ],
+                answer: 1
+            },
+            {
+                q: "In Python, when you open a file in 'w' mode, what happens to the file if it already exists?",
+                options: [
+                    "The file will be overwritten with the new data",
+                    "The file will remain unchanged",
+                    "A new file will be created and the data will be written into it",
+                    "Python will raise an error"
+                ],
+                answer: 0
+            },
+            {
+                q: "What does the mode 'w' do when opening a file in Python?",
+                options: [
+                    "Opens the file for reading only",
+                    "Opens the file for writing and creates the file if it doesn't exist",
+                    "Opens the file for both reading and writing",
+                    "Opens the file for appending data"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which of the following file modes in Python is used to open a file for appending data without overwriting the existing content?",
+                options: ["<r>", "<w>", "<a>", "<x>"],
+                answer: 2
+            },
+            {
+                q: "Which of the following file modes in Python is used to open a file for appending data overwriting the existing content?",
+                options: ["<r>", "<w>", "<a>", "<x>"],
+                answer: 1
+            },
+            {
+                q: "The following file modes in Python is used to Opens the file in append and read mode.",
+                options: ["<r>", "<w+>", "<r+>", "<a+>"],
+                answer: 3
+            },
+            {
+                q: "What is the purpose of the close() function in Python file handling?",
+                options: [
+                    "To save data to the file",
+                    "To stop reading data from the file",
+                    "To ensure that the file is closed after reading or writing",
+                    "To open a file for further reading or writing"
+                ],
+                answer: 2
+            },
+            {
+                q: "When using the with statement to open a file, what happens when the block inside with is exited?",
+                options: [
+                    "The file must be closed manually",
+                    "The file is automatically closed",
+                    "The file is closed only if there's an error",
+                    "The file remains open until the program ends"
+                ],
+                answer: 1
+            },
+            {
+                q: "After opening a file with the open() function, how do you close the file to free up resources?",
+                options: [
+                    "file_object.close()",
+                    "file_object.end()",
+                    "file_object.finish()",
+                    "file_object.closefile()"
+                ],
+                answer: 0
+            },
+            {
+                q: "The correct syntax of file close is",
+                options: ["file(close)", "close.file()", "file.close( )", "close(file)"],
+                answer: 2
+            },
+            {
+                q: "Which of the following is the correct syntax to open a file in write mode?",
+                options: [
+                    'obj=open("file.txt", \'r\')',
+                    'obj=open("file.txt", \'w\')',
+                    'obj=open("file.txt", \'rw\')',
+                    'obj=open("file.txt", "x")'
+                ],
+                answer: 1
+            },
+            {
+                q: "What does the write() method return?",
+                options: [
+                    "Writing is successful",
+                    "It does not return the number of characters",
+                    "The number of characters written",
+                    "Return file object"
+                ],
+                answer: 2
+            },
+            {
+                q: "What does the writelines() method return?",
+                options: [
+                    "Written only binary digits",
+                    "The number of characters read",
+                    "The number of characters written",
+                    "It does not return the number of characters"
+                ],
+                answer: 3
+            },
+            {
+                q: "Which of the following method is used to write multiple strings to a file.",
+                options: ["write()", "writing()", "writestring()", "writelines()"],
+                answer: 3
+            },
+            {
+                q: "What does the read() method do in Python?",
+                options: [
+                    "It reads only the first line",
+                    "Reads a specified number of bytes from a file",
+                    "Reads a single line from a file",
+                    "Write a specified number of bytes from a file"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which of the following is true about the read() method without any arguments?",
+                options: [
+                    "It reads only the first line",
+                    "It reads a fixed number of characters",
+                    "It reads the entire file",
+                    "It throws an error"
+                ],
+                answer: 2
+            },
+            {
+                q: "What does the readlines() method do in Python?",
+                options: [
+                    "Reads the entire file as a single string",
+                    "Reads the file in all the lines and returns a list of lines",
+                    "Reads the first line of the file",
+                    "Reads all lines and prints them"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which of the following statements is TRUE regarding the readline() method?",
+                options: [
+                    "It can be used to read a specific number of bytes from the file",
+                    "It only reads the first line of a file regardless of the value of n",
+                    "It reads the file until the newline character is reached, then stops",
+                    "It modifies the content of the file while reading it"
+                ],
+                answer: 2
+            },
+            {
+                q: "Which method returns the current position of the file object in python?",
+                options: ["file.tell()", "file.seek()", "file.peek()", "file.pickle()"],
+                answer: 0
+            },
+            {
+                q: "If you want to move the file pointer to a specific position, which method should be used in combination with tell()?",
+                options: ["seek()", "open()", "read()", "close()"],
+                answer: 0
+            },
+            {
+                q: "What will happen if you call writelines() on an empty list?",
+                options: [
+                    "It will raise an exception",
+                    "It will write an empty line to the file",
+                    "It will not write anything to the file",
+                    "It will overwrite the file with an empty string"
+                ],
+                answer: 2
+            },
+            {
+                q: "If you want to read a file line by line in Python, which of the following would you use?",
+                options: ["file.read()", "file.readline()", "file.write()", "file.seek()"],
+                answer: 1
+            },
+            {
+                q: "What is the primary purpose of Pickle in Python?",
+                options: [
+                    "To store Python objects in a human-readable format",
+                    "To compress Python objects to save space",
+                    "To serialize and store Python objects for later retrieval",
+                    "To perform mathematical operations on Python objects"
+                ],
+                answer: 2
+            },
+            {
+                q: "Which of the following modules is used to serialize and deserialize Python objects?",
+                options: ["json", "pickle", "os", "sys"],
+                answer: 1
+            },
+            {
+                q: "Which of the following types of objects can be serialized using Pickle?",
+                options: ["Lists", "Tuples", "Dictionaries", "All of these"],
+                answer: 3
+            },
+            {
+                q: "What is the primary purpose of the dump() method in Python?",
+                options: [
+                    "To convert a Python object into a string",
+                    "To convert Python object into a binary format for saving to a file",
+                    "To save the state of a Python object as text data",
+                    "To deserialize a Python object from a binary file"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which module provides the dump() method to serialize objects in Python?",
+                options: ["pickle", "json", "marshal", "os"],
+                answer: 0
+            },
+            {
+                q: "In which case would you need to use the dump() method?",
+                options: [
+                    "When you want to convert a binary file into a text file",
+                    "When you need to store Python objects in a binary file",
+                    "When you want to retrieve Python objects from a file",
+                    "When you are reading a file's content line by line"
+                ],
+                answer: 1
+            },
+            {
+                q: "What is the correct syntax for using the dump() method?",
+                options: [
+                    "dump(data_object, file_object)",
+                    "dump(file_object, data_object)",
+                    "file_object.dump(data_object)",
+                    "data_object.dump(file_object)"
+                ],
+                answer: 0
+            },
+            {
+                q: "In the context of Pickling, what does the term 'serializing' mean?",
+                options: [
+                    "Making an object immutable",
+                    "Converting an object into a byte stream for storage",
+                    "Encrypting an object to prevent unauthorized access",
+                    "Changing the type of an object for easier storage"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which of the following functions does Pickle provide for saving an object to a file?",
+                options: ["pickle.load()", "pickle.dump()", "pickle.serialize()", "pickle.save()"],
+                answer: 1
+            },
+            {
+                q: "Which of the following functions does Pickle provide for loading a saved object from a file?",
+                options: ["pickle.load()", "pickle.write()", "pickle.restore()", "pickle.read()"],
+                answer: 0
+            },
+            {
+                q: "In the Pickling process, which term refers to reading a serialized object from a file and restoring it to its original state?",
+                options: ["Serialization", "Deserialization", "Encryption", "Compression"],
+                answer: 1
+            },
+            {
+                q: "What does the flush() method do when used with file handling in programming?",
+                options: [
+                    "Closes the file immediately",
+                    "Clears the buffer and writes the contents to the file",
+                    "Deletes the file contents permanently",
+                    "Opens the file for writing"
+                ],
+                answer: 1
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let timerInterval;
+        let timeRemaining = 45 * 60;
+        let startTime;
+
+        function initializeTest() {
+            startTime = Date.now();
+            renderQuestions();
+            updateProgress();
+            startTimer();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                if (index === 0) questionDiv.classList.add('active');
+
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1} of ${questions.length}</span>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                    <ul class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <li class="option" onclick="selectAnswer(${index}, ${optIndex})" data-index="${optIndex}">
+                                ${String.fromCharCode(97 + optIndex)}) ${option}
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectAnswer(questionIndex, optionIndex) {
+            userAnswers[questionIndex] = optionIndex;
+            
+            const questionDiv = document.querySelectorAll('.question-container')[questionIndex];
+            const options = questionDiv.querySelectorAll('.option');
+            
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[optionIndex].classList.add('selected');
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null).length;
+            const percentage = (answered / questions.length) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');
+                currentQuestionIndex++;
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');
+                updateNavigationButtons();
+                updateQuestionCounter();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');
+                currentQuestionIndex--;
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');
+                updateNavigationButtons();
+                updateQuestionCounter();
+            }
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+        }
+
+        function updateQuestionCounter() {
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                
+                const timerDisplay = document.getElementById('timer');
+                timerDisplay.textContent = `⏱️ ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeRemaining <= 300) {
+                    timerDisplay.classList.add('warning');
+                }
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            
+            let correct = 0;
+            let wrong = 0;
+            
+            userAnswers.forEach((answer, index) => {
+                if (answer === questions[index].answer) {
+                    correct++;
+                } else if (answer !== null) {
+                    wrong++;
+                }
+            });
+            
+            const percentage = Math.round((correct / questions.length) * 100);
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            
+            document.getElementById('questionsContainer').style.display = 'none';
+            document.querySelector('.navigation').style.display = 'none';
+            
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.classList.add('active');
+            
+            document.getElementById('scorePercentage').textContent = percentage + '%';
+            document.getElementById('correctAnswers').textContent = correct;
+            document.getElementById('wrongAnswers').textContent = wrong;
+            document.getElementById('timeTaken').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            const scoreCircle = document.getElementById('scoreCircle');
+            if (percentage >= 90) scoreCircle.className = 'score-circle excellent';
+            else if (percentage >= 70) scoreCircle.className = 'score-circle good';
+            else if (percentage >= 50) scoreCircle.className = 'score-circle average';
+            else scoreCircle.className = 'score-circle poor';
+        }
+
+        function showReview() {
+            const reviewSection = document.getElementById('reviewSection');
+            reviewSection.style.display = 'block';
+            reviewSection.innerHTML = '<h2 style="margin-bottom: 20px;">📝 Detailed Answer Review</h2>';
+            
+            questions.forEach((q, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === q.answer;
+                
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = `review-question ${isCorrect ? 'correct' : 'wrong'}`;
+                
+                reviewDiv.innerHTML = `
+                    <h4>Question ${index + 1}: ${isCorrect ? '✅ Correct' : '❌ Wrong'}</h4>
+                    <p><strong>${q.q}</strong></p>
+                    <p style="margin-top: 10px;">
+                        <strong>Your Answer:</strong> ${userAnswer !== null ? q.options[userAnswer] : 'Not Answered'}<br>
+                        <strong>Correct Answer:</strong> ${q.options[q.answer]}
+                    </p>
+                `;
+                
+                reviewSection.appendChild(reviewDiv);
+            });
+            
+            document.getElementById('resultContainer').style.display = 'none';
+        }
+
+        function restartTest() {
+            location.reload();
+        }
+
+        window.onload = initializeTest;
+    </script>
+</body>
+</html>

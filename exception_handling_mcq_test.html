@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exception Handling - MCQ Test | Class XII Computer Science</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .timer-section {
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .timer.warning {
+            color: #e74c3c;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .progress-bar {
+            flex: 1;
+            margin: 0 30px;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            padding: 30px;
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .question-number {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options {
+            list-style: none;
+        }
+
+        .option {
+            background: #f8f9fa;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .option.wrong {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-container {
+            display: none;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .score-circle.excellent {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .score-circle.good {
+            background: linear-gradient(135deg, #17a2b8 0%, #3498db 100%);
+        }
+
+        .score-circle.average {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+        }
+
+        .score-circle.poor {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .review-section {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .review-question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .review-question.correct {
+            border-left: 4px solid #28a745;
+        }
+
+        .review-question.wrong {
+            border-left: 4px solid #dc3545;
+        }
+
+        .answer-explanation {
+            margin-top: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .timer-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .progress-bar {
+                margin: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐍 Exception Handling in Python</h1>
+            <p>Class XII Computer Science - MCQ Test</p>
+        </div>
+
+        <div class="timer-section">
+            <div class="timer" id="timer">⏱️ 60:00</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <div class="question-number">
+                <span id="currentQuestion">1</span> / <span id="totalQuestions">76</span>
+            </div>
+        </div>
+
+        <!-- Questions will be inserted here dynamically -->
+        <div id="questionsContainer"></div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()">← Previous</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitTest()" style="display: none;">Submit Test</button>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <h2>Test Completed! 🎉</h2>
+            <div class="score-circle" id="scoreCircle">
+                <div>
+                    <div id="scorePercentage">0%</div>
+                    <div style="font-size: 16px; margin-top: 10px;">Score</div>
+                </div>
+            </div>
+            <div class="result-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Questions</div>
+                    <div class="stat-value" id="totalQuestionsResult">76</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Correct Answers</div>
+                    <div class="stat-value" id="correctAnswers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Wrong Answers</div>
+                    <div class="stat-value" id="wrongAnswers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Time Taken</div>
+                    <div class="stat-value" id="timeTaken">0:00</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="showReview()">View Detailed Review</button>
+            <button class="btn btn-secondary" onclick="restartTest()" style="margin-left: 10px;">Retake Test</button>
+        </div>
+
+        <div class="review-section" id="reviewSection" style="display: none;">
+            <!-- Review content will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "What is a syntax error in Python?",
+                options: [
+                    "An error related to the logical flow of the program",
+                    "An error in the logic of the program",
+                    "An error that occurs when the rules of the programming language are not followed",
+                    "An error that occurs only during runtime"
+                ],
+                answer: 2
+            },
+            {
+                q: "What type of error is raised when you forget to close a parentheses in Python?",
+                options: ["SyntaxError", "ValueError", "TypeError", "RuntimeError"],
+                answer: 0
+            },
+            {
+                q: "What is another name for a syntax error in programming?",
+                options: ["Runtime error", "Parsing error", "Logical error", "Exception error"],
+                answer: 1
+            },
+            {
+                q: "What happens when a syntax error is encountered in Python?",
+                options: [
+                    "The program executes",
+                    "The program stops execution until the error is fixed",
+                    "The program runs slower",
+                    "The interpreter tries to correct the error automatically"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which of the following is an example of a syntax error in Python?",
+                options: [
+                    "Using a variable without declaring it first",
+                    "Forgetting to close a parenthesis in a function call",
+                    "Using the wrong type of operator",
+                    "Calling a function with the wrong number of arguments"
+                ],
+                answer: 1
+            },
+            {
+                q: "How does Python handle a program with a syntax error?",
+                options: [
+                    "Python shows a warning but continues execution",
+                    "Python shows an error message and stops execution until the error is fixed",
+                    "Python prompt user to correct interactively",
+                    "Python ignores the error and runs the program"
+                ],
+                answer: 1
+            },
+            {
+                q: "Identify the error in the following programming segment:\nIf marks >20 :\n    print \"Good Score\"",
+                options: ["RuntimeError", "LogicalError", "KeyboardError", "SyntaxError"],
+                answer: 3
+            },
+            {
+                q: "Which exception is raised when not followed rules of Python language?",
+                options: ["IndentationError", "SyntaxError", "NameError", "ValueError"],
+                answer: 1
+            },
+            {
+                q: "Which of the following is a valid example of a syntax error in Python?",
+                options: [
+                    'print("Hello World)',
+                    "if x = 5:",
+                    "def my function():",
+                    "All of these"
+                ],
+                answer: 3
+            },
+            {
+                q: 'In the following Python code, what is the syntax error?\nif x = = 10\n    print("x is 10")',
+                options: [
+                    "The colon (:) is missing before the print statement",
+                    "The condition has a missing parentheses",
+                    "The colon (:) is missing after the if condition",
+                    "The colon (:) is missing after the print statement"
+                ],
+                answer: 2
+            },
+            {
+                q: "What is an exception in programming?",
+                options: [
+                    "A type of error that occurs during the execution of a program",
+                    "A warning message displayed after execution",
+                    "A successful execution of a conditional statement",
+                    "A special type of loop in programming"
+                ],
+                answer: 0
+            },
+            {
+                q: "What is an exception in Python?",
+                options: [
+                    "A Python object that represents a successful program execution",
+                    "A Python object that represents an error",
+                    "A built-in function used for debugging",
+                    "A type of variable in Python"
+                ],
+                answer: 1
+            },
+            {
+                q: "What happens when an error occurs during the execution of a Python program?",
+                options: [
+                    "The program continues executing as normal",
+                    "It automatically recompile the program",
+                    "An exception is raised",
+                    "The program runs a default error message and continues"
+                ],
+                answer: 2
+            },
+            {
+                q: "Why should exceptions be handled in Python?",
+                options: [
+                    "To ensure that errors are ignored",
+                    "To make the program run faster",
+                    "To prevent the program from terminating abnormally",
+                    "To execute the program without error"
+                ],
+                answer: 2
+            },
+            {
+                q: "What does the 'as' keyword do in an exception block?",
+                options: [
+                    "It raises the exception",
+                    "It assigns the exception object to a variable",
+                    "It catches the exception and terminate the program",
+                    "It creates a custom except for class"
+                ],
+                answer: 1
+            },
+            {
+                q: "What is the effect of using try-except blocks in Python?",
+                options: [
+                    "It prevents the program from terminating abruptly",
+                    "It helps in performing automatic type casting",
+                    "It can only handle syntax errors",
+                    "It optimizes the program execution speed"
+                ],
+                answer: 0
+            },
+            {
+                q: "What type of error does Python raise when a function receives an argument of the correct type but inappropriate value?",
+                options: ["KeyboardInterrupt", "ValueError", "TypeError", "NameError"],
+                answer: 1
+            },
+            {
+                q: "Which exception is raised when the file specified in a program statement cannot be opened?",
+                options: ["IOError", "EOFError", "IndexError", "ValueError"],
+                answer: 0
+            },
+            {
+                q: "Which exception is raised when the requested module definition is not found?",
+                options: ["FileNotFoundError", "ImportError", "SyntaxError", "ModuleNotFound"],
+                answer: 1
+            },
+            {
+                q: "Which exception is raised when the end of file condition is reached without reading any data by input()?",
+                options: ["EOFError", "ImportError", "SyntaxError", "ValueError"],
+                answer: 0
+            },
+            {
+                q: "Which exception is raised when a division by zero operation is performed?",
+                options: ["ZeroError", "TypeError", "DivisionError", "ZeroDivisionError"],
+                answer: 3
+            },
+            {
+                q: "Which exception is raised when an index is out of range in a sequence?",
+                options: ["KeyError", "ValueError", "IndexError", "TypeError"],
+                answer: 2
+            },
+            {
+                q: "Which exception is raised when a local or global variable name is not defined?",
+                options: ["ImportError", "NameError", "SyntaxError", "ValueError"],
+                answer: 1
+            },
+            {
+                q: "Which exception is raised due to incorrect indentation in the program code?",
+                options: ["ImportError", "AssertionError", "IndexError", "IndentationError"],
+                answer: 3
+            },
+            {
+                q: "Which exception is raised when an operation or function is applied to an object of inappropriate data type?",
+                options: ["TypeError", "NameError", "OverflowError", "SyntaxError"],
+                answer: 0
+            },
+            {
+                q: "Which built-in exception is raised when a file is not found?",
+                options: ["FileNotFoundError", "IOError", "NameError", "TypeError"],
+                answer: 0
+            },
+            {
+                q: "What is the purpose of the raise statement in Python?",
+                options: [
+                    "To raise the program's execution to a higher point in the code",
+                    "To terminate the program",
+                    "It can be used to throw an exception",
+                    "To end the program execution"
+                ],
+                answer: 2
+            },
+            {
+                q: "Which of the following is the correct syntax for raising an exception in Python?",
+                options: [
+                    "throw Exception('Error message')",
+                    "raise Exception('optional argument')",
+                    "raise 'Error message'",
+                    "raise exception('Error message')"
+                ],
+                answer: 1
+            },
+            {
+                q: "What is the primary purpose of the assert statement in Python?",
+                options: [
+                    "To catch exceptions during program execution",
+                    "To define functions for debugging",
+                    "To test if a condition is true and raise an exception if it is false",
+                    "To handle errors in user input"
+                ],
+                answer: 2
+            },
+            {
+                q: "Which statement is used in python to raise an exception manually?",
+                options: ["assert", "raise", "throw", "catch"],
+                answer: 1
+            },
+            {
+                q: "Which of the following is the correct syntax for using an assert statement?",
+                options: [
+                    "assert condition:",
+                    "assert expression[arguments]",
+                    "assert(condition)",
+                    "assert: condition"
+                ],
+                answer: 1
+            },
+            {
+                q: "What type of exception is raised when an assertion fails in Python?",
+                options: ["TypeError", "ValueError", "IndexError", "AssertionError"],
+                answer: 3
+            },
+            {
+                q: "What is the primary purpose of exception handling in programming?",
+                options: [
+                    "To make the code run faster",
+                    "To manage runtime errors gracefully",
+                    "To make code more complex",
+                    "To reduce the size of the program"
+                ],
+                answer: 1
+            },
+            {
+                q: "What is the main reason for using exception handling in programming?",
+                options: [
+                    "To automatically fix errors",
+                    "To manage unexpected errors and maintain program flow",
+                    "To prevent syntax errors",
+                    "To terminate program abruptly"
+                ],
+                answer: 1
+            },
+            {
+                q: "What does the Python interpreter do when an error occurs during program execution?",
+                options: [
+                    "It stops the program without any notification",
+                    "It creates an exception object",
+                    "It deletes all variables",
+                    "It restarts the program"
+                ],
+                answer: 1
+            },
+            {
+                q: "What is the process called when an exception object is created and handed over to the runtime system for handling?",
+                options: [
+                    "Handling an exception",
+                    "Catching an exception",
+                    "Throwing an exception",
+                    "Ignoring an exception"
+                ],
+                answer: 2
+            },
+            {
+                q: "What does the runtime system search for when an exception is raised?",
+                options: [
+                    "The variable that caused the exception",
+                    "The source code file where the exception occurred",
+                    "A block of code called the exception handler that can handle the exception",
+                    "The compiler directives related to the exception"
+                ],
+                answer: 2
+            },
+            {
+                q: "What is the name of the block of code that handles exceptions raised during program execution?",
+                options: ["Error block", "Catch block", "Exception handler", "Runtime block"],
+                answer: 2
+            },
+            {
+                q: "Which of the following statements is true about using multiple except blocks in Python?",
+                options: [
+                    "Only one except block is allowed per try block",
+                    "Multiple except blocks can be used to handle different exceptions separately",
+                    "Multiple except blocks can be used, but only the last one is executed",
+                    "All except blocks are executed in sequence when an error occurs"
+                ],
+                answer: 1
+            },
+            {
+                q: "What will happen if an exception is raised inside the else block of a try-except-else structure?",
+                options: [
+                    "The exception will be caught by the except block",
+                    "The program will terminate immediately",
+                    "The exception will be ignored, and the code will continue execution",
+                    "The exception will not be caught and will propagate outside the block"
+                ],
+                answer: 3
+            },
+            {
+                q: "Which of the following is true about the else block in Python exception handling?",
+                options: [
+                    "It is executed if an exception is raised in the try block",
+                    "It is executed only if no exception occurs in the try block",
+                    "It is always executed, regardless of exceptions",
+                    "It is used to define an alternate block"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which Python keyword is used to handle exceptions?",
+                options: ["finally", "identifier", "catches", "except"],
+                answer: 3
+            },
+            {
+                q: "Which of the following keywords are not specific to exception handling?",
+                options: ["Try", "except", "else", "finally"],
+                answer: 2
+            },
+            {
+                q: "What will happen if a try block contains a raise statement but there is no corresponding except block?",
+                options: [
+                    "The program will ignore the raised exception and continue",
+                    "The program will terminate with a traceback error",
+                    "The program will automatically catch the exception and continue",
+                    "The program will raise a new exception automatically"
+                ],
+                answer: 1
+            },
+            {
+                q: "What happens if an exception is raised inside a try block, but no except block is present to catch it?",
+                options: [
+                    "It call the else block",
+                    "The program terminates with an error",
+                    "The exception is caught by the raise statement",
+                    "The program moves to the else block"
+                ],
+                answer: 1
+            },
+            {
+                q: "What is the purpose of the else block in a try-except-else statement?",
+                options: [
+                    "To handle exceptions that occur in the try block",
+                    "To run code when no exception occurs in the try block",
+                    "To execute code after the exception is raised",
+                    "To finalize code after all exceptions are handled"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which of the following is used to handle exceptions in Python?",
+                options: ["catch", "exception", "try - except", "throw"],
+                answer: 2
+            },
+            {
+                q: "In which block is the exception actually thrown?",
+                options: ["try", "catch", "finally", "exception"],
+                answer: 0
+            },
+            {
+                q: "What will happen if an exception is raised but not caught in a try-except block?",
+                options: [
+                    "The program will continue without interruption",
+                    "The program will terminate and display the traceback",
+                    "The program will ignore the exception and continue execution",
+                    "The program will prompt the user to handle the exception"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which of the following will be executed if an exception is thrown and not caught?",
+                options: [
+                    "The program terminates immediately",
+                    "The else block executes",
+                    "The finally block executes",
+                    "Program continuous with next statement"
+                ],
+                answer: 2
+            },
+            {
+                q: "In Python, what is the purpose of the else block in exception handling?",
+                options: [
+                    "To catch exceptions",
+                    "To execute code when no exception occurs",
+                    "To return the result of the operation",
+                    "To finally execute a block of code"
+                ],
+                answer: 1
+            },
+            {
+                q: "Which of the following can be used in the except block to catch multiple exceptions in Python?",
+                options: [
+                    "except (Exception1, Exception2)",
+                    "except Exception1 and Exception2",
+                    "except {Exception1, Exception2}",
+                    "except [Exception1, Exception2]"
+                ],
+                answer: 0
+            },
+            {
+                q: "How do you raise a specific exception using the raise statement?",
+                options: [
+                    'raise Exception("Error occurred")',
+                    'raise "Error occurred"',
+                    'raise catch Exception("Error occurred")',
+                    'raise "Exception"'
+                ],
+                answer: 0
+            },
+            {
+                q: "Which of the following statements about the finally block is true?",
+                options: [
+                    "It will be executed only if an exception is raised",
+                    "It will not be executed if an exception is raised",
+                    "It will be executed whether or not an exception is raised",
+                    "It will not be executed if there is no exception"
+                ],
+                answer: 2
+            },
+            {
+                q: "Which of the following is true about exception handling?",
+                options: [
+                    "It is only useful for debugging purposes",
+                    "It makes the program slower by introducing additional checks",
+                    "It allows the program to continue execution even when an error occurs",
+                    "It is not necessary in programs with few errors"
+                ],
+                answer: 2
+            },
+            {
+                q: "What is the purpose of a finally block in exception handling?",
+                options: [
+                    "It is used to define the exception",
+                    "It always executes, regardless of whether an exception was thrown or not",
+                    "It prevents the exception from being thrown",
+                    "It rethrows the exception after handling"
+                ],
+                answer: 1
+            },
+            {
+                q: "What is the role of the finally block in exception handling?",
+                options: [
+                    "To execute code after the exception is caught, regardless of whether an exception occurred",
+                    "To throw exceptions",
+                    "To catch exceptions",
+                    "To terminate the program"
+                ],
+                answer: 0
+            },
+            {
+                q: "What is the primary purpose of the finally clause in Python?",
+                options: [
+                    "To handle specific exceptions",
+                    "To catch all exceptions automatically",
+                    "To ensure that code runs regardless of whether an exception occurs",
+                    "To define the starting point of the program"
+                ],
+                answer: 2
+            },
+            {
+                q: "What happens if an exception is raised in the finally block?",
+                options: [
+                    "The exception is ignored",
+                    "The exception is logged for further analysis",
+                    "The exception is re-raised and the program terminates",
+                    "The exception is caught in the except block"
+                ],
+                answer: 2
+            },
+            {
+                q: "Can a finally block be used without an except block in Python?",
+                options: [
+                    "Yes, it can be used on its own",
+                    "No, finally must always be used with except",
+                    "Yes, but only if the try block raises an exception",
+                    "No, it leads to a syntax error"
+                ],
+                answer: 0
+            },
+            {
+                q: "Which keyword is used to raise (throw) an exception in Python?",
+                options: ["catch", "throw", "raise", "except"],
+                answer: 2
+            },
+            {
+                q: "What happens when an exception is raised in Python?",
+                options: [
+                    "The program immediately terminates",
+                    "The exception is passed silently",
+                    "The exception is propagated and can be caught in a try-except block",
+                    "The program prints a debug message and continues execution"
+                ],
+                answer: 2
+            },
+            {
+                q: "Which of the following statements is true about the raise keyword?",
+                options: [
+                    "It can only be used within a function",
+                    "It can be used to throw both predefined and custom exceptions",
+                    "It is used to handle exceptions",
+                    "It is used to catch exceptions"
+                ],
+                answer: 1
+            },
+            {
+                q: "If an exception is raised and not caught within the current function, what happens?",
+                options: [
+                    "The program terminates immediately",
+                    "The exception is passed to the next function call in the call stack",
+                    "The exception is silently ignored",
+                    "The program automatically corrects the error"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion (A): ZeroDivisionError is raised when a number is divided by zero.\nReason (R): Division by zero is undefined in mathematics and therefore not allowed in Python.",
+                options: [
+                    "Both A and R are true, but R is not the correct explanation of A",
+                    "A is true, but R is false",
+                    "A is false, but R is true",
+                    "Both A and R are true, and R is the correct explanation of A"
+                ],
+                answer: 3
+            },
+            {
+                q: "Assertion(A): TypeError is raised when an operator is supplied with a value of incorrect data type.\nReason (R): Trying to concatenate a string and an integer without conversion causes a TypeError.",
+                options: [
+                    "Both A and R are true, and R is the correct explanation of A",
+                    "Both A and R are true, but R is not the correct explanation of A",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion (A): ValueError is raised when a function receives a value of the correct data type but inappropriate value.\nReason (R): Converting a non-numeric string to an integer using int(\"abc\") raises a ValueError.",
+                options: [
+                    "Both A and R are true, and R is the correct explanation of A",
+                    "Both A and R are true, but R is not the correct explanation of A",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion (A): IndexError occurs when trying to access an index that is out of the range of a list.\nReason (R): Lists in Python start indexing from 1.",
+                options: [
+                    "Both A and R are true, and R is the correct explanation of A",
+                    "Both A and R are true, but R is not the correct explanation of A",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 2
+            },
+            {
+                q: "Assertion (A): Each time an error is detected in a program, the Python interpreter raises an exception.\nReason (R): Exception handlers are designed to execute when a specific exception is raised.",
+                options: [
+                    "Both A and R are true, and R is the correct explanation of A",
+                    "Both A and R are true, but R is not the correct explanation of A",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion (A): Programmers can only raise exceptions using the raise statement in Python.\nReason (R): The assert statement can also be used to forcefully raise exceptions in Python.",
+                options: [
+                    "Both A and R are true, and R is the correct explanation of A",
+                    "Both A and R are true, but R is not the correct explanation of A",
+                    "A is false, but R is true",
+                    "A is true, but R is false"
+                ],
+                answer: 2
+            },
+            {
+                q: "Assertion (A): The raise statement can be used to throw an exception in Python.\nReason (R): The raise statement is used only for handling exceptions that are caught by the try-except block.",
+                options: [
+                    "Both A and R are true, and R is the correct explanation of A",
+                    "Both A and R are true, but R is not the correct explanation of A",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 2
+            },
+            {
+                q: "Assertion (A): An assert statement in Python is used to test an expression in the program code. If the result is false, an AssertionError is raised.\nReason (R): The assert statement is generally used at the beginning of a function or after a function call to check for valid input.",
+                options: [
+                    "Both Assertion and Reason are true, and Reason is the correct explanation of Assertion",
+                    "Both Assertion and Reason are true, but Reason is not the correct explanation of Assertion",
+                    "Assertion is true, but Reason is false",
+                    "Assertion is false, but Reason is true"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion (A): Each and every exception has to be handled by the programmer to avoid the program from crashing abruptly.\nReason (R): This is done by writing additional code in a program to give proper messages",
+                options: [
+                    "Both A and R are true, and R is the correct explanation of A",
+                    "Both A and R are true, but R is not the correct explanation of A",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 1
+            },
+            {
+                q: "Assertion (A): In Python, the else block in a try...except...else construct is executed only when no exception is raised in the try block.\nReason (R): The except block runs only if an exception occurs in the try block; otherwise, the control moves to the else block if it exists.",
+                options: [
+                    "Both A and R are true, and R is the correct explanation of A",
+                    "Both A and R are true, but R is not the correct explanation of A",
+                    "A is true, but R is false",
+                    "A is false, but R is true"
+                ],
+                answer: 0
+            },
+            {
+                q: "Assertion (A): In Python, the finally block is always executed, whether or not an exception is raised in the try block.\nReason (R): The finally clause ensures files are properly closed and must follow all except and else blocks in a try statement.",
+                options: [
+                    "Both A and R are true, and R is the correct explanation of A",
+                    "A is true but R is not the correct explanation of A",
+                    "A is true, but R is true",
+                    "A is false, but R is true"
+                ],
+                answer: 1
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let timerInterval;
+        let timeRemaining = 60 * 60; // 60 minutes in seconds
+        let startTime;
+
+        function initializeTest() {
+            startTime = Date.now();
+            renderQuestions();
+            updateProgress();
+            startTimer();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                if (index === 0) questionDiv.classList.add('active');
+
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1} of ${questions.length}</span>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                    <ul class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <li class="option" onclick="selectAnswer(${index}, ${optIndex})" data-index="${optIndex}">
+                                ${String.fromCharCode(97 + optIndex)}) ${option}
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectAnswer(questionIndex, optionIndex) {
+            userAnswers[questionIndex] = optionIndex;
+            
+            const questionDiv = document.querySelectorAll('.question-container')[questionIndex];
+            const options = questionDiv.querySelectorAll('.option');
+            
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[optionIndex].classList.add('selected');
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(a => a !== null).length;
+            const percentage = (answered / questions.length) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');
+                currentQuestionIndex++;
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');
+                updateNavigationButtons();
+                updateQuestionCounter();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.remove('active');
+                currentQuestionIndex--;
+                document.querySelectorAll('.question-container')[currentQuestionIndex].classList.add('active');
+                updateNavigationButtons();
+                updateQuestionCounter();
+            }
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+        }
+
+        function updateQuestionCounter() {
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                
+                const timerDisplay = document.getElementById('timer');
+                timerDisplay.textContent = `⏱️ ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeRemaining <= 300) { // Last 5 minutes
+                    timerDisplay.classList.add('warning');
+                }
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            
+            let correct = 0;
+            let wrong = 0;
+            
+            userAnswers.forEach((answer, index) => {
+                if (answer === questions[index].answer) {
+                    correct++;
+                } else if (answer !== null) {
+                    wrong++;
+                }
+            });
+            
+            const unanswered = questions.length - (correct + wrong);
+            const percentage = Math.round((correct / questions.length) * 100);
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            
+            // Hide questions
+            document.getElementById('questionsContainer').style.display = 'none';
+            document.querySelector('.navigation').style.display = 'none';
+            
+            // Show results
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.classList.add('active');
+            
+            document.getElementById('scorePercentage').textContent = percentage + '%';
+            document.getElementById('correctAnswers').textContent = correct;
+            document.getElementById('wrongAnswers').textContent = wrong;
+            document.getElementById('timeTaken').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            const scoreCircle = document.getElementById('scoreCircle');
+            if (percentage >= 90) scoreCircle.className = 'score-circle excellent';
+            else if (percentage >= 70) scoreCircle.className = 'score-circle good';
+            else if (percentage >= 50) scoreCircle.className = 'score-circle average';
+            else scoreCircle.className = 'score-circle poor';
+        }
+
+        function showReview() {
+            const reviewSection = document.getElementById('reviewSection');
+            reviewSection.style.display = 'block';
+            reviewSection.innerHTML = '<h2 style="margin-bottom: 20px;">📝 Detailed Answer Review</h2>';
+            
+            questions.forEach((q, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === q.answer;
+                
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = `review-question ${isCorrect ? 'correct' : 'wrong'}`;
+                
+                reviewDiv.innerHTML = `
+                    <h4>Question ${index + 1}: ${isCorrect ? '✅ Correct' : '❌ Wrong'}</h4>
+                    <p><strong>${q.q}</strong></p>
+                    <p style="margin-top: 10px;">
+                        <strong>Your Answer:</strong> ${userAnswer !== null ? q.options[userAnswer] : 'Not Answered'}<br>
+                        <strong>Correct Answer:</strong> ${q.options[q.answer]}
+                    </p>
+                `;
+                
+                reviewSection.appendChild(reviewDiv);
+            });
+            
+            document.getElementById('resultContainer').style.display = 'none';
+        }
+
+        function restartTest() {
+            location.reload();
+        }
+
+        // Initialize test on page load
+        window.onload = initializeTest;
+    </script>
+</body>
+</html>
