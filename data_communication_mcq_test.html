@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Communication - MCQ Test | Class XII Computer Science</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .header h1::before {
+            content: "📋 ";
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .timer-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+
+        .timer::before {
+            content: "⏱️";
+        }
+
+        .question-counter {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            min-height: 400px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .options {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 1.2rem 1.5rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+            font-size: 1.1rem;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #e8eeff;
+            font-weight: 600;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 1rem;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .fill-blank-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .fill-blank-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .navigation {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .prev-btn {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .prev-btn:hover:not(:disabled) {
+            background: #bdc3c7;
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .next-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn {
+            background: #27ae60;
+            color: white;
+            padding: 0.875rem 2.5rem;
+        }
+
+        .submit-btn:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-container {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: none;
+        }
+
+        .result-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-header {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+        }
+
+        .result-header::before {
+            content: "🎉 ";
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem auto;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .score-percentage {
+            font-size: 3.5rem;
+            font-weight: 700;
+        }
+
+        .score-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-item {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .review-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .review-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .retake-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .retake-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .review-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .review-section.show {
+            display: block;
+        }
+
+        .review-header {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e1e8ed;
+        }
+
+        .review-question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #95a5a6;
+        }
+
+        .review-question.correct {
+            border-left-color: #27ae60;
+            background: #d4edda;
+        }
+
+        .review-question.wrong {
+            border-left-color: #e74c3c;
+            background: #f8d7da;
+        }
+
+        .review-q-number {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-q-text {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .review-answer {
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .review-answer.correct-ans {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .review-answer.user-ans {
+            color: #e74c3c;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .timer-bar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+            }
+
+            .result-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Data Communication</h1>
+            <p>Class XII Computer Science - MCQ Test</p>
+        </div>
+
+        <div id="testSection">
+            <div class="timer-bar">
+                <div class="timer" id="timer">30:00</div>
+                <div class="question-counter">
+                    <span id="currentQuestion">1</span> / <span id="totalQuestions">28</span>
+                </div>
+            </div>
+
+            <div class="question-card" id="questionCard">
+                <!-- Questions will be loaded here dynamically -->
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn prev-btn" id="prevBtn" onclick="previousQuestion()">← Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn" onclick="nextQuestion()">Next →</button>
+                <button class="nav-btn submit-btn hidden" id="submitBtn" onclick="submitTest()">Submit Test</button>
+            </div>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <h2 class="result-header">Test Completed!</h2>
+            
+            <div class="score-circle">
+                <div class="score-percentage" id="scorePercentage">0%</div>
+                <div class="score-label">Score</div>
+            </div>
+
+            <div class="result-stats">
+                <div class="stat-item">
+                    <div class="stat-label">Total Questions</div>
+                    <div class="stat-value" id="statTotal">28</div>
+                </div>
+                <div class="stat-item" style="border-left-color: #27ae60;">
+                    <div class="stat-label">Correct Answers</div>
+                    <div class="stat-value" id="statCorrect" style="color: #27ae60;">0</div>
+                </div>
+                <div class="stat-item" style="border-left-color: #e74c3c;">
+                    <div class="stat-label">Wrong Answers</div>
+                    <div class="stat-value" id="statWrong" style="color: #e74c3c;">0</div>
+                </div>
+                <div class="stat-item" style="border-left-color: #f39c12;">
+                    <div class="stat-label">Time Taken</div>
+                    <div class="stat-value" id="statTime">0:00</div>
+                </div>
+            </div>
+
+            <div class="result-actions">
+                <button class="action-btn review-btn" onclick="showReview()">View Detailed Review</button>
+                <button class="action-btn retake-btn" onclick="retakeTest()">Retake Test</button>
+            </div>
+        </div>
+
+        <div class="review-section" id="reviewSection">
+            <h2 class="review-header">Detailed Review</h2>
+            <div id="reviewContent"></div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="action-btn retake-btn" onclick="retakeTest()">Retake Test</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // MCQ Questions
+            {
+                type: 'mcq',
+                question: "The exchange of data between two or more connected devices is called",
+                options: ["Bandwidth", "Data transfer rate", "Protocol", "Data Communication"],
+                correct: 3
+            },
+            {
+                type: 'mcq',
+                question: "A Computer or any device which is capable of transferring data over a network is",
+                options: ["Receiver", "Sender", "Message", "Communication media"],
+                correct: 1
+            },
+            {
+                type: 'mcq',
+                question: "A Computer or any device which is capable of accept data from the network is",
+                options: ["Receiver", "Sender", "Message", "Communication media"],
+                correct: 0
+            },
+            {
+                type: 'mcq',
+                question: "The data or information that needs to be exchanged between the sender and receiver is called",
+                options: ["Receiver", "Sender", "Message", "Communication media"],
+                correct: 2
+            },
+            {
+                type: 'mcq',
+                question: "The path through which the message travels between source and destination is called",
+                options: ["Receiver", "Sender", "Message", "Communication media"],
+                correct: 3
+            },
+            {
+                type: 'mcq',
+                question: "Set of rules that need to followed by commination parties in order to have successful and reliable data communication is called as",
+                options: ["Receiver", "Sender", "Protocol", "Communication media"],
+                correct: 2
+            },
+            {
+                type: 'mcq',
+                question: "Bandwidth is measured in",
+                options: ["bps", "Kbps", "Gbps", "Hertz(Hz)"],
+                correct: 3
+            },
+            {
+                type: 'mcq',
+                question: "MBps stands for",
+                options: ["Megabyte per second", "Megabit per second", "Measuring Byte per second", "Measuring Bit per second"],
+                correct: 0
+            },
+            {
+                type: 'mcq',
+                question: "Which of the following is a one way communication between two devices?",
+                options: ["Half duplex", "Simplex", "Full duplex", "Half simplex"],
+                correct: 1
+            },
+            {
+                type: 'mcq',
+                question: "Example of simplex communication mode is",
+                options: ["Walkie-Talkies", "Mobile", "TV", "Computer"],
+                correct: 2
+            },
+            {
+                type: 'mcq',
+                question: "Which of the following is a two way communication between two devices but only one device can send data at a time?",
+                options: ["Half duplex", "Simplex", "Full duplex", "Half simplex"],
+                correct: 0
+            },
+            {
+                type: 'mcq',
+                question: "Example of half duplex communication mode is",
+                options: ["Walkie-Talkies", "Mobile", "TV", "Computer"],
+                correct: 0
+            },
+            {
+                type: 'mcq',
+                question: "A two way communication in which both devices can send and receive data simultaneously is called",
+                options: ["Half duplex", "Simplex", "Full duplex", "Half simplex"],
+                correct: 2
+            },
+            {
+                type: 'mcq',
+                question: "Example of full duplex communication mode is",
+                options: ["Walkie-Talkies", "Fan", "TV", "Computer"],
+                correct: 3
+            },
+            {
+                type: 'mcq',
+                question: "Data is transferred through a physical links or cables is called",
+                options: ["Guide media", "Unguided media", "Data transfer", "Switching"],
+                correct: 0
+            },
+            {
+                type: 'mcq',
+                question: "Data is transferred in air through electromagnetic waves is called",
+                options: ["Guide media", "Unguided media", "Data transfer", "Switching"],
+                correct: 1
+            },
+            {
+                type: 'mcq',
+                question: "UTP stands for",
+                options: ["Un twisted pair", "Unit twisted pair", "Unshielded twisted pair", "Urban twisted pair"],
+                correct: 2
+            },
+            {
+                type: 'mcq',
+                question: "STP stands for",
+                options: ["Switching twisted pair", "Shielded twisted pair", "Soft twisted pair", "Signal twisted pair"],
+                correct: 1
+            },
+            {
+                type: 'mcq',
+                question: "A short range wireless technology that can be used to connect mobile-phones, mouse, headphones, keyboards is called",
+                options: ["LAN", "WAN", "Bluetooth", "Tablet"],
+                correct: 2
+            },
+            {
+                type: 'mcq',
+                question: "HTTP stands for",
+                options: ["HeaderText Transfer protocol", "HyperText Transfer Protocol", "HighText Transfer Protocol", "HomeText Transfer protocol"],
+                correct: 1
+            },
+            {
+                type: 'mcq',
+                question: "FTP stands for",
+                options: ["Fibre Transfer protocol", "Fact Transfer Protocol", "File Transfer Protocol", "Firewall Transfer protocol"],
+                correct: 2
+            },
+            {
+                type: 'mcq',
+                question: "PPP stands for",
+                options: ["Point-to Point Protocol", "Protocol-to Point Protocol", "Peer-to Peer Protocol", "Packet-to Packet Protocol"],
+                correct: 0
+            },
+            {
+                type: 'mcq',
+                question: "ISP stands for",
+                options: ["Industry Service Provider", "Intel Service Provider", "Infrared Service Provider", "Internet Service Provider"],
+                correct: 3
+            },
+            {
+                type: 'mcq',
+                question: "SMTP stands for",
+                options: ["Single Mail Transfer Protocol", "Simple Mail Transfer Protocol", "Service Mail Transfer Protocol", "Set Mail Transfer Protocol"],
+                correct: 1
+            },
+            {
+                type: 'mcq',
+                question: "TCP/IP stands for",
+                options: ["Transmission Control Protocol/Internet Protocol", "Transfer Control Protocol/Internet Protocol", "Transmit Control Protocol/Internet Protocol", "Technology Control Protocol/Internet Protocol"],
+                correct: 0
+            },
+            // Fill in the blank questions
+            {
+                type: 'fillblank',
+                question: "________ is the range of frequencies available for transmission of data through that channel.",
+                correct: ["bandwidth", "Bandwidth"]
+            },
+            {
+                type: 'fillblank',
+                question: "_______ is the number of bits transmitted between source and destination in one second.",
+                correct: ["data transfer rate", "Data transfer rate", "Data Transfer Rate"]
+            },
+            {
+                type: 'fillblank',
+                question: "Older telephone uses__________ switching technique.",
+                correct: ["circuit", "Circuit"]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let timerInterval;
+        let timeRemaining = 30 * 60; // 30 minutes in seconds
+        let startTime;
+
+        function initTest() {
+            document.getElementById('totalQuestions').textContent = questions.length;
+            loadQuestion();
+            startTimer();
+            startTime = Date.now();
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            const questionCard = document.getElementById('questionCard');
+            
+            let html = `
+                <div class="question-number">Question ${currentQuestionIndex + 1}</div>
+                <div class="question-text">${question.question}</div>
+            `;
+
+            if (question.type === 'mcq') {
+                html += '<div class="options">';
+                question.options.forEach((option, index) => {
+                    const isSelected = userAnswers[currentQuestionIndex] === index;
+                    html += `
+                        <div class="option ${isSelected ? 'selected' : ''}" onclick="selectOption(${index})">
+                            <input type="radio" name="question" value="${index}" ${isSelected ? 'checked' : ''} id="opt${index}">
+                            <label for="opt${index}">${String.fromCharCode(97 + index)}) ${option}</label>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            } else if (question.type === 'fillblank') {
+                html += `<input type="text" class="fill-blank-input" id="fillInput" 
+                         value="${userAnswers[currentQuestionIndex] || ''}" 
+                         placeholder="Type your answer here"
+                         oninput="saveFillBlankAnswer(this.value)">`;
+            }
+
+            questionCard.innerHTML = html;
+            
+            // Update question counter
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('nextBtn').classList.add('hidden');
+                document.getElementById('submitBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('nextBtn').classList.remove('hidden');
+                document.getElementById('submitBtn').classList.add('hidden');
+            }
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIndex] = optionIndex;
+            
+            // Update UI
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelectorAll('.option')[optionIndex].classList.add('selected');
+            document.getElementById(`opt${optionIndex}`).checked = true;
+        }
+
+        function saveFillBlankAnswer(value) {
+            userAnswers[currentQuestionIndex] = value.trim();
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            
+            let correct = 0;
+            let wrong = 0;
+            
+            questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                
+                if (userAnswer !== null && userAnswer !== '') {
+                    if (question.type === 'mcq') {
+                        if (userAnswer === question.correct) {
+                            correct++;
+                        } else {
+                            wrong++;
+                        }
+                    } else if (question.type === 'fillblank') {
+                        if (question.correct.some(ans => 
+                            ans.toLowerCase() === userAnswer.toLowerCase())) {
+                            correct++;
+                        } else {
+                            wrong++;
+                        }
+                    }
+                }
+            });
+
+            const unanswered = questions.length - correct - wrong;
+            const percentage = Math.round((correct / questions.length) * 100);
+            
+            // Calculate time taken
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            const minutesTaken = Math.floor(timeTaken / 60);
+            const secondsTaken = timeTaken % 60;
+            
+            // Display results
+            document.getElementById('scorePercentage').textContent = percentage + '%';
+            document.getElementById('statTotal').textContent = questions.length;
+            document.getElementById('statCorrect').textContent = correct;
+            document.getElementById('statWrong').textContent = wrong;
+            document.getElementById('statTime').textContent = 
+                `${minutesTaken}:${secondsTaken.toString().padStart(2, '0')}`;
+            
+            // Hide test section and show results
+            document.getElementById('testSection').classList.add('hidden');
+            document.getElementById('resultContainer').classList.add('show');
+        }
+
+        function showReview() {
+            const reviewContent = document.getElementById('reviewContent');
+            let html = '';
+            
+            questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                let correctAnswerText = '';
+                let userAnswerText = '';
+                
+                if (question.type === 'mcq') {
+                    isCorrect = userAnswer === question.correct;
+                    correctAnswerText = question.options[question.correct];
+                    userAnswerText = userAnswer !== null ? question.options[userAnswer] : 'Not answered';
+                } else if (question.type === 'fillblank') {
+                    isCorrect = question.correct.some(ans => 
+                        ans.toLowerCase() === (userAnswer || '').toLowerCase());
+                    correctAnswerText = question.correct[0];
+                    userAnswerText = userAnswer || 'Not answered';
+                }
+                
+                html += `
+                    <div class="review-question ${isCorrect ? 'correct' : 'wrong'}">
+                        <div class="review-q-number">Question ${index + 1} - ${isCorrect ? '✓ Correct' : '✗ Wrong'}</div>
+                        <div class="review-q-text">${question.question}</div>
+                        <div class="review-answer correct-ans">✓ Correct Answer: ${correctAnswerText}</div>
+                        ${!isCorrect ? `<div class="review-answer user-ans">✗ Your Answer: ${userAnswerText}</div>` : ''}
+                    </div>
+                `;
+            });
+            
+            reviewContent.innerHTML = html;
+            document.getElementById('reviewSection').classList.add('show');
+            document.getElementById('reviewSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function retakeTest() {
+            // Reset everything
+            currentQuestionIndex = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            timeRemaining = 30 * 60;
+            
+            // Hide result and review sections
+            document.getElementById('resultContainer').classList.remove('show');
+            document.getElementById('reviewSection').classList.remove('show');
+            document.getElementById('testSection').classList.remove('hidden');
+            
+            // Restart test
+            initTest();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize test when page loads
+        window.onload = initTest;
+    </script>
+</body>
+</html>
