@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Computer Science Notes Portal</title>
+<style>
+:root{--p:#1565c0;--bg:#eaf3ff;--card:rgba(255,255,255,.2);--txt:#fff}
+body.dark{--bg:#0b1220;--card:rgba(30,41,59,.35)}
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:linear-gradient(135deg,#1976d2,#42a5f5,#7e57c2);background-size:300% 300%;animation:g 12s infinite;color:#fff}
+@keyframes g{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+header{padding:25px;text-align:center}
+.top{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+button,.btn{padding:10px 18px;border:none;border-radius:10px;background:#1565c0;color:#fff;cursor:pointer;text-decoration:none}
+.search{display:block;margin:15px auto;width:min(500px,90%);padding:12px;border-radius:10px;border:none}
+.glass{width:min(1100px,95%);margin:15px auto;background:var(--card);backdrop-filter:blur(12px);border-radius:18px;padding:20px}
+.tabs{text-align:center;margin-bottom:15px}
+.tab{margin:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{background:rgba(255,255,255,.15);padding:18px;border-radius:14px}
+.card h3{margin:0 0 8px}
+footer{text-align:center;padding:20px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+<h1>Millennium Composite PU College, Kalaburagi</h1>
+<h2>Computer Science Notes Download Centre</h2>
+<div class="top">
+<button onclick="showTab('ipu')">📘 I PU</button>
+<button onclick="showTab('iipu')">📗 II PU</button>
+<button onclick="toggleDark()">🌙 Dark Mode</button>
+<a class="btn" href="index.html">🏠 Home</a>
+</div>
+
+</header>
+
+<div class="glass">
+<div id="ipu" class="grid">
+<div class="card"><h3>💻 I PU BLUE PRINT</h3><p> BLUE PRINT</p><p>Downloads: <span id="c1">0</span></p><button onclick="dl('c1','https://drive.google.com/uc?export=download&id=1WY17X4JgIqOINz0-LARH2tzgbBv2_p4w')">📥 Download</button></div>
+<div class="card"><h3>💻 I PU NCERT BOOK</h3><p>Computer Science NCERT BOOK ALL CHAPTERS(courtesy NCERT board)</p><p>Downloads: <span id="c2">0</span></p><button onclick="dl('c2','https://ncert.nic.in/textbook.php?kecs1=0-11')">📥 Download</button></div>
+
+<div class="card"><h3>💻 I PU Question Bank</h3><p>Computer Science Question Bank(courtesy pu board)</p><p>Downloads: <span id="c3">0</span></p><button onclick="dl('c3','https://drive.google.com/file/d/1XbYdvC8-sCAzBpAMiBsojBGhrck-LeOD/view?usp=sharing')">📥 Download</button></div>
+
+<div class="card"><h3>💻 I PU MODEL QUESTION PAPER</h3><p>Computer Science MODEL QUESTION PAPER(courtesy pu board)</p><p>Downloads: <span id="c4">0</span></p><button onclick="dl('c4','https://dpue-pragathi.karnataka.gov.in/question_bank/model%20question%20papers/41%20COMPUTER%20SCIENCE%20MODEL%20PAPER.pdf')">📥 Download</button></div>
+
+<div class="card"><h3>💻 I PU  MODEL QUESTION PAPER LBA</h3><p> LBA MODEL QUESTION PAPER Computer Science Notes</p><p>Downloads: <span id="c5">0</span></p><button onclick="dl('c5','https://dpue-pragathi.karnataka.gov.in/MQP/ModelQuestionPaper/41%20COMPUTER%20SCIENCE%20I%20PUC%20MQP.pdf')">📥 Download</button></div>
+<div class="card"><h3>💻 I PU LESSON BASED ASSESMENT 26-27</h3><p>Computer Science LESSON BASED ASSESMENT</p><p>Downloads: <span id="c6">0</span></p><button onclick="dl('c6','https://drive.google.com/file/d/1iMH_BV-hE03QU_qMbL5G3BqgNKgdAs5e/view?usp=sharing')">📥 Download</button></div>
+
+<div class="card"><h3>💻 I PU NOTES</h3><p>Computer Science Notes available soon</p><p>Downloads: <span id="c7">0</span></p><button onclick="dl('c7','https://drive.google.com/uc?export=download&id=1WY17X4JgIqOINz0-LARH2tzgbBv2_p4w')">📥 Download</button></div>
+
+<div class="card"><h3>💻 I PU </h3><p>Computer Science Notes available soon</p><p>Downloads: <span id="c8">0</span></p><button onclick="dl('c8','https://drive.google.com/uc?export=download&id=1WY17X4JgIqOINz0-LARH2tzgbBv2_p4w')">📥 Download</button></div>
+</div><div id="iipu" class="grid hidden"><div class="card"><h3>💻 II PU Chapter 1</h3><p>Computer Science Notes</p><p>Downloads: <span id="c9">0</span></p><button onclick="dl('c9','https://drive.google.com/uc?export=download&id=1WY17X4JgIqOINz0-LARH2tzgbBv2_p4w')">📥 Download</button></div>
+<div class="card"><h3>💻 II PU Chapter 2</h3><p>Computer Science Notes</p><p>Downloads: <span id="c10">0</span></p><button onclick="dl('c10','https://drive.google.com/uc?export=download&id=1WY17X4JgIqOINz0-LARH2tzgbBv2_p4w')">📥 Download</button></div>
+<div class="card"><h3>💻 II PU Chapter 3</h3><p>Computer Science Notes</p><p>Downloads: <span id="c11">0</span></p><button onclick="dl('c11','https://drive.google.com/uc?export=download&id=1WY17X4JgIqOINz0-LARH2tzgbBv2_p4w')">📥 Download</button></div>
+<div class="card"><h3>💻 II PU Chapter 4</h3><p>Computer Science Notes</p><p>Downloads: <span id="c12">0</span></p><button onclick="dl('c12','https://drive.google.com/uc?export=download&id=1WY17X4JgIqOINz0-LARH2tzgbBv2_p4w')">📥 Download</button></div>
+<div class="card"><h3>💻 II PU Chapter 5</h3><p>Computer Science Notes</p><p>Downloads: <span id="c13">0</span></p><button onclick="dl('c13','https://drive.google.com/uc?export=download&id=1WY17X4JgIqOINz0-LARH2tzgbBv2_p4w')">📥 Download</button></div>
+<div class="card"><h3>💻 II PU Chapter 6</h3><p>Computer Science Notes</p><p>Downloads: <span id="c14">0</span></p><button onclick="dl('c14','https://drive.google.com/uc?export=download&id=1WY17X4JgIqOINz0-LARH2tzgbBv2_p4w')">📥 Download</button></div>
+<div class="card"><h3>💻 II PU Chapter 7</h3><p>Computer Science Notes</p><p>Downloads: <span id="c15">0</span></p><button onclick="dl('c15','https://drive.google.com/uc?export=download&id=1WY17X4JgIqOINz0-LARH2tzgbBv2_p4w')">📥 Download</button></div>
+<div class="card"><h3>💻 II PU Chapter 8</h3><p>Computer Science Notes</p><p>Downloads: <span id="c16">0</span></p><button onclick="dl('c16','https://drive.google.com/uc?export=download&id=1WY17X4JgIqOINz0-LARH2tzgbBv2_p4w')">📥 Download</button></div>
+
+</div></div>
+<footer>Developed by <b>Siddaram Diggikar</b><br>© 2026 Millennium Composite PU College</footer>
+<script>
+function showTab(id){ipu.classList.add('hidden');iipu.classList.add('hidden');document.getElementById(id).classList.remove('hidden')}
+function toggleDark(){document.body.classList.toggle('dark');localStorage.theme=document.body.classList.contains('dark')}
+if(localStorage.theme==='true')document.body.classList.add('dark');
+function dl(id,url){let n=+localStorage[id]||0;n++;localStorage[id]=n;document.getElementById(id).textContent=n;window.open(url,'_blank')}
+document.querySelectorAll('span[id^=c]').forEach(s=>s.textContent=localStorage[s.id]||0);
+function filterCards(){let v=search.value.toLowerCase();document.querySelectorAll('.card').forEach(c=>c.style.display=c.innerText.toLowerCase().includes(v)?'':'none')}
+</script>
+</body></html>
