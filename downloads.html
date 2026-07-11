@@ -78,4 +78,13 @@ function dl(id,url){let n=+localStorage[id]||0;n++;localStorage[id]=n;document.g
 document.querySelectorAll('span[id^=c]').forEach(s=>s.textContent=localStorage[s.id]||0);
 function filterCards(){let v=search.value.toLowerCase();document.querySelectorAll('.card').forEach(c=>c.style.display=c.innerText.toLowerCase().includes(v)?'':'none')}
 </script>
+  <p>
+👀 Total Visitors: 
+<span id="busuanzi_value_site_uv"></span>
+</p>
+
+        </div>
+    </div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
 </body></html>
